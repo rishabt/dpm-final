@@ -4,6 +4,7 @@ import java.io.*;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 import javax.bluetooth.*;
+import Support.Communicator;
 
 public class Slave {
 

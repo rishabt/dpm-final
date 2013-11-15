@@ -6,8 +6,9 @@ public class ObjectDetector extends Thread{
 	
 	private static ColorSensor cs = new ColorSensor(SensorPort.S2);
 	private static UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
-	private TwoWheeledRobot robot;
+	private static TwoWheeledRobot robot;
 	static Odometer odo;
+	
 	static Navigation nav;
 	static int approximate = 7;
 	
@@ -21,8 +22,9 @@ public class ObjectDetector extends Thread{
 	
 	public static type TYPE;
 	
-	public static type detector() throws Exception{
+	public static boolean detector() throws Exception{
 		
+		boolean result = false;	
 		boolean detecting = true;
 		
 		int red,green,blue;
@@ -31,16 +33,21 @@ public class ObjectDetector extends Thread{
 		Motor.B.setSpeed(100);
 		
 		while(detecting){													//Runs a while loop
-					
+			
+			//Sound.buzz();
 			//LCD.drawInt(us.getDistance(), 0, 2);
 			Motor.A.forward();												//Moves forward
 			Motor.B.forward();
+			
+			//robot.setForwardSpeed(30);
 			
 			if(us.getDistance() <= 16){										//If the distance from the ultrasonic sensor is less than 16
 				cs.setFloodlight(cs.BLUE);									//The floodlight is set to blue
 				
 				Motor.A.stop();												//The robot stops
 				Motor.B.stop();
+				
+				//robot.setForwardSpeed(0);
 				
 				Thread.sleep(500);											//Thread sleeps for 500 ms
 				
@@ -55,16 +62,19 @@ public class ObjectDetector extends Thread{
 				if(Math.abs(red-blue) <= approximate){						//The following test the conditions for detection					
 					LCD.drawString("Object", 0, 3);							//If the red - blue is within the approximate range then it is an object
 					TYPE = type.OBJECT;
-					Sound.beep();
-					nav.moveBy(20);
-					nav.travelTo(80, 190);
+					//Sound.beep();
+//					nav.moveBy(20);
+//					nav.travelTo(80, 190);
+					result = true;
 					detecting = false;
 				}
 				
 				else{
 					LCD.drawString("Block", 0, 3);							//Else a block
 					TYPE = type.BLOCK;
-					nav.moveBy(-10);
+					Sound.buzz();
+					//nav.moveBy(-10);
+					result = false;
 					detecting = false;
 				}
 				
@@ -74,7 +84,7 @@ public class ObjectDetector extends Thread{
 			
 			
 		}
-		return TYPE;
+		return result;
 		
 	}
 

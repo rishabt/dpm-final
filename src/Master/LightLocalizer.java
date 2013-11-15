@@ -34,13 +34,18 @@ public class LightLocalizer {
 		int i = 0;
 		
 		while(condition){
-			robot.setRotationSpeed(50);
 			
-			if(ls.readNormalizedValue() < 440){
+			robot.setRotationSpeed(30);
+			
+//			if(ls.readNormalizedValue() <= 500){
+//				Sound.beep();
+//			}
+			
+			if(ls.readNormalizedValue() < 500){
 				gridAngles[i] = odo.getTheta();
 				Sound.beep();
 				
-				try{Thread.sleep(200);} catch(Exception e){}
+				try{Thread.sleep(800);} catch(Exception e){}
 			}
 			
 			i++;
@@ -48,18 +53,23 @@ public class LightLocalizer {
 			if(i == 4)
 				condition = false;
 			
+			LCD.drawInt(ls.readNormalizedValue(), 0, 5);
+			
 		}
 			
-		robot.setRotationSpeed(0);
+		//robot.setRotationSpeed(0);
 		
-		double thetaY = - Math.abs(gridAngles[1] - gridAngles[3]);
+		double thetaY = Math.abs(gridAngles[1] - gridAngles[3]);
 		
-		double thetaX = - Math.abs(gridAngles[0] - gridAngles[2]);
+		double thetaX = Math.abs(gridAngles[0] - gridAngles[2]);
 		
-		double newX = distance * Math.cos(thetaY/2);
-		double newY = distance * Math.cos(thetaX/2);
+		double newX = - distance * Math.cos(thetaY/2);
+		double newY = - distance * Math.cos(thetaX/2);
 		
 		odo.setPosition(new double [] {newX, newY, 0.0}, new boolean [] {true, true, false});
+		
+		//nav.travelTo(0, 0);
 	}
+	
 
 }
