@@ -1,0 +1,3 @@
+bin/compile
+cd classes && nxjlink -o ../$1.nxj $1
+cd .. && echo "complete!"

@@ -1,0 +1,4 @@
+echo -n "cleaning project... "
+find classes -type f -name *.class | xargs rm > /dev/null 2>&1
+rm *.nxj > /dev/null 2>&1
+echo "complete!"

@@ -1,0 +1,2 @@
+cd classes && nxjlink -o ../$1/$1.nxj $1 && cd ..
+nxjupload -r $1.nxj
