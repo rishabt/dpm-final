@@ -32,7 +32,7 @@ public class Master {
 		Odometer odo = new Odometer(robot, true);
 		LCD.drawString("* odometer on", 0, 2);
 		
-		Navigation nav = new Navigation(odo);
+		Navigation nav = new Navigation(odo, communicator);
 		LCD.drawString("* nav ready", 0, 3);
 				
 		LCDInfo lcd = new LCDInfo(odo);

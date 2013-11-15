@@ -7,7 +7,6 @@ public class Odometer implements TimerListener {
 	public static final int DEFAULT_PERIOD = 25;
 	private TwoWheeledRobot robot;
 	private Timer odometerTimer;
-	private Navigation nav;
 	// position data
 	private Object lock;
 	private double x, y, theta;
@@ -16,7 +15,6 @@ public class Odometer implements TimerListener {
 	public Odometer(TwoWheeledRobot robot, int period, boolean start) {
 		// initialise variables
 		this.robot = robot;
-		this.nav = new Navigation(this);
 		odometerTimer = new Timer(period, this);
 		x = 0.0;
 		y = 0.0;
@@ -83,10 +81,6 @@ public class Odometer implements TimerListener {
 	
 	public TwoWheeledRobot getTwoWheeledRobot() {
 		return robot;
-	}
-	
-	public Navigation getNavigation() {
-		return this.nav;
 	}
 	
 	// mutators

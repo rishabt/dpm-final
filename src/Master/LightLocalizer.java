@@ -7,7 +7,6 @@ public class LightLocalizer {
 	private Odometer odo;
 	private TwoWheeledRobot robot;
 	private LightSensor ls;
-	private Navigation nav;
 	private double distance = 7.5;
 
 	int speed = 150; int count = 4;
@@ -19,7 +18,6 @@ public class LightLocalizer {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.ls = ls;
-		this.nav = new Navigation(odo);
 		
 		// turn on the light
 		ls.setFloodlight(true);

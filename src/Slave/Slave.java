@@ -19,12 +19,14 @@ public class Slave {
 		
 		// INITIALIZE
 		
-		Bluetooth.setFriendlyName("master");
+		Bluetooth.setFriendlyName("slave");
 		
 		LCD.drawString("connecting...", 0, 0);
 		
 		Communicator communicator = new Communicator(bluetoothConnect());
 		LCD.drawString("* bluetooth up", 0, 0);
+		
+		Button.waitForAnyPress();
 	}
 
 	public static BTConnection bluetoothConnect() {

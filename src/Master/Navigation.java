@@ -1,6 +1,7 @@
 package Master;
 
 import lejos.nxt.*;
+import Support.Communicator;
 
 //													USED AS GIVEN TO US IN LAB 4
 
@@ -9,6 +10,7 @@ public class Navigation {
 	// NAVIGATION USED AS A MIX FROM LAST LAB AND FROM THE GIVEN CODE AND SOME EXTRA METHODS ADDED
 	
 	private Odometer odo;
+	private Communicator comm;
 	private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
 	private TwoWheeledRobot robot = new TwoWheeledRobot(Motor.A, Motor.B);
 	private int ROTATE_SPEED = 50;
@@ -27,8 +29,9 @@ public class Navigation {
 	private int i = 1;
 
 	
-	public Navigation(Odometer odo) {
+	public Navigation(Odometer odo, Communicator comm) {
 		this.odo = odo;
+		this.comm = comm;
 	}
 	
 	public TwoWheeledRobot getTwoWheeledRobot(){
