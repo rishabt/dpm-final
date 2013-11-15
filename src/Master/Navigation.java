@@ -34,15 +34,10 @@ public class Navigation {
 		turnTo(requiredAngle);
 		
 		while(Math.abs(y - odo.getY()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR){
-			
-			
 			robot.setForwardSpeed(10);
-			
 		}
 		
 		robot.setForwardSpeed(0);
-		
-		turnTo(0);
 	}
 	
 	public void turnTo(double angle) {

@@ -1,4 +1,4 @@
 bin/clean
 echo -n "compiling project... "
-find src -type f -name *.java | xargs nxjc -d classes -Xlint:deprecation
+find src -type f -name *.java | xargs nxjc -d classes
 echo "complete!"

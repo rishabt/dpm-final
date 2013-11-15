@@ -18,8 +18,8 @@ public class Odometer implements TimerListener {
 		this.robot = robot;
 		this.nav = new Navigation(this);
 		odometerTimer = new Timer(period, this);
-		x = 0.0;
-		y = 0.0;
+		x = 30.0;
+		y = 30.0;
 		theta = 0.0;
 		oldDH = new double [2];
 		dDH = new double [2];
@@ -73,12 +73,12 @@ public class Odometer implements TimerListener {
 		this.theta = theta;
 	}
 	
-	public void setY(double Y){
-		this.y = Y;
+	public void setY(double y){
+		this.y = y;
 	}
 	
-	public void setX(double X){
-		this.x = X;
+	public void setX(double x){
+		this.x = x;
 	}
 	
 	public TwoWheeledRobot getTwoWheeledRobot() {
