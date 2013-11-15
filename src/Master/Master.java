@@ -46,6 +46,8 @@ public class Master {
 		
 		// LOCALIZE
 		
+		USLocalizer localizer = new USLocalizer(odo, us);
+		localizer.doLocalization();
 		
 		// SEARCH & SCORE
 

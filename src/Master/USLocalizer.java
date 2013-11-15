@@ -13,172 +13,172 @@ public class USLocalizer {
 	private Odometer odo;
 	private TwoWheeledRobot robot;
 	private UltrasonicSensor us;
-	private LocalizationType locType;
 	private final int walld = 50;
 	
 	
-	public USLocalizer(Odometer odo, UltrasonicSensor us, LocalizationType locType) {
+	public USLocalizer(Odometer odo, UltrasonicSensor us) {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.us = us;
-		this.locType = locType;
 		
 		// switch off the ultrasonic sensor
 		us.off();
 	}
 	
 	public void doLocalization() {
-		
 		double [] pos = new double [3];
 		double angleA = 0, angleB = 0;
-         double progress = 0;
-		   int distance = getFilteredData();
-		   boolean initial = false;
-		   boolean isanglefinished = false;
+      double progress = 0;
+	   int distance = getFilteredData();
+	   boolean initial = false;
+	   boolean isanglefinished = false;
 		   
-		if (locType == LocalizationType.FALLING_EDGE) {
 			
-			// rotate the robot until it sees no wall
-		    // starting direction identification: if the starting feedback distance is more than 50,
-		   //  proceed to progress 1(initial = false && progress = 1); 
-		   // else, initiate the initial turning to make it more than 40(initial = true && progress =0)
-		    while( progress == 0 && initial == false){
-		    	distance = getFilteredData();
-		    	if(distance < walld){
-		    		initial = true;
-		    		progress = 0;		    		
-		    	}
-		    	else if (distance > walld ){
-		    		initial = false;
-		    		progress = 1;
-		    		Sound.beep();		    		
+		// rotate the robot until it sees no wall
+	    // starting direction identification: if the starting feedback distance is more than 50,
+	   //  proceed to progress 1(initial = false && progress = 1); 
+	   // else, initiate the initial turning to make it more than 40(initial = true && progress =0)
+	    while( progress == 0 && initial == false){
+	    	distance = getFilteredData();
+	    	if(distance < walld){
+	    		initial = true;
+	    		progress = 0;		    		
+	    	}
+	    	else if (distance > walld ){
+	    		initial = false;
+	    		progress = 1;
+	    		Sound.beep();		    		
 		    		
-		    	}
-		    }
+	    	}
+	    }
 		    
-		    //try { Thread.sleep(100); } catch (InterruptedException e) {}
+	    //try { Thread.sleep(100); } catch (InterruptedException e) {}
 		    
-		    // initial process(progress = 0), if the distance is more than 50, go to progress 1
-		    while( progress == 0 && initial == true){
+	    // initial process(progress = 0), if the distance is more than 50, go to progress 1
+	    while( progress == 0 && initial == true){
 		    	
-		    	distance = getFilteredData();
-		    	robot.setRotationSpeed(ROTATION_SPEED);
+	    	double[] reset = new double[3];
+	    	reset[0] = 0; reset[1] = 0; reset[2] = 0;
+	    	boolean[] reset1 = { true, true, true};
 		    	
-		    	if(distance > walld ){	    		
-		    		distance = getFilteredData();
-		    		progress = 1;
-		    		initial = false;//quit the initial process
-		    	Sound.beep();
+	    	distance = getFilteredData();
+	    	robot.setRotationSpeed(ROTATION_SPEED);
+		    	
+	    	if(distance > walld ){	    		
+	    		distance = getFilteredData();
+	    		progress = 1;
+	    		odo.setPosition(reset,reset1);
+	    		initial = false;//quit the initial process
+	    	Sound.beep();
 		    			    	
-		    	}	
+	    	}	
 		    	
-		    }
-		    try { Thread.sleep(100); } catch (InterruptedException e) {}
-		    // ****progress 1 starts here: 
-		    // rotate until reaching a distance less than 40. when it does,
-		    // stop the vehicle temporarily and latch angleA.
-		    // then proceed to progress 2.
-		    while (progress == 1 && distance > walld-1 ){
+	    }
+	    try { Thread.sleep(100); } catch (InterruptedException e) {}
+	    // ****progress 1 starts here: 
+	    // rotate until reaching a distance less than 40. when it does,
+	    // stop the vehicle temporarily and latch angleA.
+	    // then proceed to progress 2.
+	    while (progress == 1 && distance > walld-1 ){
 		    	
-                odo.getPosition(pos);
-		    	distance = getFilteredData();
-		    	robot.setRotationSpeed(ROTATION_SPEED);
+             odo.getPosition(pos);
+	    	distance = getFilteredData();
+	    	robot.setRotationSpeed(ROTATION_SPEED);
 		    			    	
-		    	if(distance < walld+1){		    		
-		    		robot.setRotationSpeed(-ROTATION_SPEED);
-		    		angleA = pos[2];		    		
-		    		progress = 2;		    				    				    		
-		    	}
+	    	if(distance < walld+1){		    		
+	    		robot.setRotationSpeed(-ROTATION_SPEED);
+	    		angleA = pos[2];		    		
+	    		progress = 2;		    				    				    		
+	    	}
 		    			    	
-		    }
+	    }
 		    
-			try { Thread.sleep(1000); } catch (InterruptedException e) {}
+		try { Thread.sleep(1000); } catch (InterruptedException e) {}
 			
-		    //rotate in the opposite direction(progress 2) after angleA is recorded.
-		    //then, when seeing the other wall, latch the angle.
-		    while (progress == 2){
+	    //rotate in the opposite direction(progress 2) after angleA is recorded.
+	    //then, when seeing the other wall, latch the angle.
+	    while (progress == 2){
 		    	
-		    	odo.getPosition(pos);
-		    	distance = getFilteredData();
-		    	robot.setRotationSpeed(-ROTATION_SPEED);
+	    	odo.getPosition(pos);
+	    	distance = getFilteredData();
+	    	robot.setRotationSpeed(-ROTATION_SPEED);
 		    	
 		    	
-		    	if(distance < walld ){		    		
-		    		angleB = 360 -pos[2];		    		
-		    		robot.setRotationSpeed(0.0);	
+	    	if(distance < walld ){		    		
+	    		angleB = 360 -pos[2];		    		
+	    		robot.setRotationSpeed(0.0);	
 		    		
-		    		try { Thread.sleep(80); } catch (InterruptedException e) {}
+	    		try { Thread.sleep(80); } catch (InterruptedException e) {}
 		    		
-		    		progress = 3;//go to progress 3		    				    		
-		    	}
-		    }
+	    		progress = 3;//go to progress 3		    				    		
+	    	}
+	    }
 		    
-		    //progress == 3 is the calculation and turning to y=axis process.	
-		    if (progress == 3){
+	    //progress == 3 is the calculation and turning to y=axis process.	
+	    if (progress == 3){
 		    	
-		    	double value = 0.0;
-		        //double test = (angleA-angleB)/2 - 45;
+	    	double value = 0.0;
+	        //double test = (angleA-angleB)/2 - 45;
 		        
-		    	if(angleA > angleB){
-		    	   value = 45 - (angleA + angleB)/2;
-		    	   isanglefinished = true;
-		       }
-		       else if(angleB > angleA){
-		    	   value = 225 - (angleB + angleA)/2;
+	    	if(angleA > angleB){
+	    	   value = 45 - (angleA + angleB)/2;
+	    	   isanglefinished = true;
+	       }
+	       else if(angleB > angleA){
+	    	   value = 225 - (angleB + angleA)/2;
 		    	   
-		    	   try { Thread.sleep(80); } catch (InterruptedException e) {}
+	    	   try { Thread.sleep(80); } catch (InterruptedException e) {}
 		    	   
-		    	   isanglefinished = true;		    	   
-		       }
+	    	   isanglefinished = true;		    	   
+	       }
 		       
-		    	try { Thread.sleep(80); } catch (InterruptedException e) {}
+	    	try { Thread.sleep(80); } catch (InterruptedException e) {}
 		    	
-		       if(isanglefinished == true){
-		       Motor.A.setSpeed(80);
-		       Motor.B.setSpeed(80);
+	       if(isanglefinished == true){
+	       Motor.A.setSpeed(80);
+	       Motor.B.setSpeed(80);
 		       
-		         if(angleA < angleB){
-		    	   Motor.A.rotate(convertAngle(2.885, 16.755,  value-105), true);
-				   Motor.B.rotate(-convertAngle(2.885, 16.755, value-105),false);  
-		         }
-		         if(angleA > angleB){
-		           Motor.A.rotate(convertAngle(2.885, 16.755,  -value-6), true);
-				   Motor.B.rotate(-convertAngle(2.885, 16.755, -value-6),false);  
-		         }
+	         if(angleA < angleB){
+	    	   Motor.A.rotate(convertAngle(2.885, 16.755,  value-95), true);
+			   Motor.B.rotate(-convertAngle(2.885, 16.755, value-95),false);  
+	         }
+	         if(angleA > angleB){
+	           Motor.A.rotate(convertAngle(2.885, 16.755,  -value-16), true);
+			   Motor.B.rotate(-convertAngle(2.885, 16.755, -value-16),false);  
+	         }
 		         
-				   try { Thread.sleep(100); } catch (InterruptedException e) {}
-				   odo.getPosition(pos);
-				   boolean update[] = {true, true, true};
-				   double newpos[] = {0,0,0+1};
-				   odo.setPosition(newpos, update);
-		       //}
-		      // if(angleA > 180){
-		       //Motor.A.rotate(convertAngle(2.885, 16.755,  test ), true);
-			   //Motor.B.rotate(-convertAngle(2.885, 16.755, test),false);
-		       //}
-		       }
-		    }
+			   try { Thread.sleep(100); } catch (InterruptedException e) {}
+			   odo.getPosition(pos);
+			   boolean update[] = {true, true, true};
+			   double newpos[] = {0,0,0+1};
+			   odo.setPosition(newpos, update);
+	       //}
+	      // if(angleA > 180){
+	       //Motor.A.rotate(convertAngle(2.885, 16.755,  test ), true);
+		   //Motor.B.rotate(-convertAngle(2.885, 16.755, test),false);
+	       //}
+	       }
+	    }
 		
 		    
-			//keep rotating until the robot sees a wall, then latch the angle
+		//keep rotating until the robot sees a wall, then latch the angle
 			
-			//angle latched here( seeing the first-taking-into-account wall)
+		//angle latched here( seeing the first-taking-into-account wall)
 			
-			// switch direction and rotate 
+		// switch direction and rotate 
 			
 			
-			// keep rotating until the robot sees a wall, then latch the angle
+		// keep rotating until the robot sees a wall, then latch the angle
 		
-			// angleA is clockwise from angleB, so assume the average of the
-			// angles to the right of angleB is 45 degrees past 'north'
-		
-		}
-			
+		// angleA is clockwise from angleB, so assume the average of the
+		// angles to the right of angleB is 45 degrees past 'north'			
 	}
+	
 	// methods of determining the rotations for the wheels from Lab 2's SquareDriver
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
+	
 	// methods of determining the rotating angles for the wheels from Lab 2's SquareDriver
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);

@@ -85,22 +85,20 @@ public class Navigation {
 	
 	public void turnTo(double angle){
 		
+		Motor.A.setSpeed(ROTATE_SPEED);
+		Motor.B.setSpeed(ROTATE_SPEED);			
 				
-				Motor.A.setSpeed(ROTATE_SPEED);
-				Motor.B.setSpeed(ROTATE_SPEED);			
+		double correctedAngle = angle - odo.getTheta();
 				
-				double correctedAngle = angle - odo.getTheta();
+		correctedAngle = minTheta(correctedAngle);
 				
-				correctedAngle = minTheta(correctedAngle);
+		Motor.A.rotate(convertAngle(leftRadius, width, correctedAngle), true);
+		Motor.B.rotate(-convertAngle(rightRadius, width, correctedAngle), false);
 				
-				Motor.A.rotate(convertAngle(leftRadius, width, correctedAngle), true);
-				Motor.B.rotate(-convertAngle(rightRadius, width, correctedAngle), false);
+		Sound.beep();
 				
-				Sound.beep();
-				
-				Motor.A.stop();
-				Motor.B.stop();
-		
+		Motor.A.stop();
+		Motor.B.stop();
 	}
 	
 	
@@ -115,7 +113,6 @@ public class Navigation {
 
 	
 	public void goForward(){
-		
 		Motor.A.setSpeed(100);
 		Motor.B.setSpeed(100);
 		
@@ -130,8 +127,8 @@ public class Navigation {
 		int filter = 0;
 		
 		try {
-			if(ObjectDetector.detector() == false){
-				if(i % 2 != 0){
+			if (ObjectDetector.detector() == false){
+				if (i % 2 != 0){
 					turnTo(odo.getTheta() + 90);
 					Sound.beepSequenceUp();
 				}
@@ -143,7 +140,7 @@ public class Navigation {
 				moveBy(35);
 				
 				
-				if(i % 2 != 0)
+				if (i % 2 != 0)
 					turnTo(odo.getTheta() - 90);
 				
 				else
@@ -172,15 +169,16 @@ public class Navigation {
 			}
 			
 			
-			if(ObjectDetector.detector() == true){			// DO THE COMMUNICATION AND GRABBING VIA SLAVE
+			if (ObjectDetector.detector() == true) {
 				
+				// tell the slave brick to lift the block
+				comm.bluetoothSend("lift");
 			}
 			
 			
 		} 
 		
-		catch (Exception e) {
-		}
+		catch (Exception e) {}
 		
 		i++;
 		

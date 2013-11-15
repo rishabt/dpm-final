@@ -10,7 +10,7 @@ public class Search {
 		this.us = us;
 	}
 	
-	public void searchAlgorithm(){
+	public void searchAlgorithm() {
 		
 		
 	}

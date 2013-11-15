@@ -26,7 +26,20 @@ public class Slave {
 		Communicator communicator = new Communicator(bluetoothConnect());
 		LCD.drawString("* bluetooth up", 0, 0);
 		
-		Button.waitForAnyPress();
+		String message = "";
+		while (true) {
+			message = communicator.bluetoothReceive();
+			if (message.equals("lift")) {
+				Clamp.lifting();
+			} else if (message.equals("drop")) {
+				Clamp.dropping();
+			}
+			if (message.length() == 0) message = "N/A";
+			
+			LCD.clear();
+			LCD.drawString(message, 3, 3);
+			try { Thread.sleep(250); } catch(Exception e) {}
+		}
 	}
 
 	public static BTConnection bluetoothConnect() {
