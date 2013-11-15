@@ -57,8 +57,9 @@ public class Master {
 //			usl.doLocalization();
 			//try { Thread.sleep(2000); } catch (InterruptedException e) {}
 				
-			nav.travelTo(70, 60);
-				
+			nav.travelTo(60, 60);
+			
+			/*
 			nav.travelTo(20, 80);
 				
 			nav.travelTo(60, 80);
@@ -76,6 +77,7 @@ public class Master {
 			nav.travelTo(170, 170);
 				
 			nav.travelTo(100, 60);
+			*/
 		}
 		
 		Button.waitForAnyPress();

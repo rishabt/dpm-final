@@ -3,16 +3,22 @@ package Slave;
 import lejos.nxt.*;
 
 public class Clamp {
+	
+	public static void lockMotors() {
+		Motor.A.stop();
+		Motor.B.stop();
+		Motor.C.stop();
+	}
     
     public static void lifting() {
     	 NXTRegulatedMotor mastermotor = Motor.A;
-         NXTRegulatedMotor leftclaw = Motor.B; 
-         NXTRegulatedMotor rightclaw = Motor.C;
-         int gangle = 95;
-         int langle = 95;
-         int cspeed = 50;
+       NXTRegulatedMotor leftclaw = Motor.B; 
+       NXTRegulatedMotor rightclaw = Motor.C;
+       int gangle = 95;
+       int langle = 95;
+       int cspeed = 50;
          
-         mastermotor.setSpeed(cspeed);
+       mastermotor.setSpeed(cspeed);
     	 leftclaw.setSpeed(cspeed);
     	 rightclaw.setSpeed(cspeed);
     	
@@ -22,6 +28,7 @@ public class Clamp {
 		rightclaw.rotate(gangle, false);
 		try { Thread.sleep(1000); } catch (InterruptedException e) {}
 		Sound.beep();
+		lockMotors();
     }
     
     public static void dropping(){
@@ -44,7 +51,7 @@ public class Clamp {
 		Sound.beepSequence();
 		mastermotor.rotate(-100);
 		try { Thread.sleep(3000); } catch (InterruptedException e) {}
-        
+		lockMotors();
     }
     
     private static int convertDistance(double radius, double distance) {

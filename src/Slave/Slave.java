@@ -21,6 +21,8 @@ public class Slave {
 		
 		Bluetooth.setFriendlyName("slave");
 		
+		Clamp.lockMotors();
+		
 		LCD.drawString("connecting...", 0, 0);
 		
 		Communicator communicator = new Communicator(bluetoothConnect());
