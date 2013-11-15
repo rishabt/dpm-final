@@ -4,11 +4,13 @@ import java.io.*;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 import javax.bluetooth.*;
-import Support.Communicator;
+import Support.*;
 
 public class Master {
 	
 	public static void main(String[] args){
+		Button.ESCAPE.addButtonListener(new ExitListener());
+		
 		LCD.drawString("MASTER", 0, 1);
 		LCD.drawString("(press button)", 0, 3);
 		
@@ -16,6 +18,8 @@ public class Master {
 		LCD.clear();
 		
 		// INITIALIZE
+		
+		Bluetooth.setFriendlyName("master");
 		
 		LCD.drawString("connecting...", 0, 0);
 		Communicator communicator = new Communicator(bluetoothConnect());
@@ -40,8 +44,12 @@ public class Master {
 		LightSensor ls = new LightSensor(SensorPort.S3);
 		LCD.drawString("* l.s. ready", 0, 6);
 		
+		// LOCALIZE
+		
+		
+		// SEARCH & SCORE
 
-		if(Button.waitForAnyPress() == Button.ID_LEFT){
+		if (Button.waitForAnyPress() == Button.ID_LEFT) {
 				
 //			USLocalizer usl = new USLocalizer(odo, us, USLocalizer.LocalizationType.FALLING_EDGE);
 //			usl.doLocalization();
@@ -72,13 +80,13 @@ public class Master {
 	}
 	
 	public static BTConnection bluetoothConnect() {
-		RemoteDevice navigator = Bluetooth.getKnownDevice("navigator");
-		if (navigator == null) {
+		RemoteDevice slave = Bluetooth.getKnownDevice("slave");
+		if (slave == null) {
 			LCD.drawString("ERROR: device not found", 0, 1);
 			Button.waitForAnyPress();
 			System.exit(1);
 		}
-		return Bluetooth.connect(navigator);
+		return Bluetooth.connect(slave);
 	}
 	
 }
