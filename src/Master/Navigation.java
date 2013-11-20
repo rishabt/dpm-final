@@ -1,23 +1,29 @@
 package Master;
 
+
+// Rishab: TODO clean up the travelling code. I can't read it, nor work with it!
+
 import lejos.nxt.*;
 import Support.Communicator;
-
-//													USED AS GIVEN TO US IN LAB 4
+import java.util.LinkedList;
 
 public class Navigation {
 	// put your navigation code here 
 	// NAVIGATION USED AS A MIX FROM LAST LAB AND FROM THE GIVEN CODE AND SOME EXTRA METHODS ADDED
 	
 	private Odometer odo;
-	private Communicator comm;
-	private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
-	private TwoWheeledRobot robot = new TwoWheeledRobot(Motor.A, Motor.B);
+	private UltrasonicSensor us;
+	private TwoWheeledRobot robot;
+	private Grid grid;
+	
 	private int ROTATE_SPEED = 50;
+	
 	private double leftRadius = 2.9;
 	private double rightRadius = 2.9;
 	private double width = 12.61;
+	
 	public double[] position = new double[3];
+	
 	public int ROTATION_SPEED = 150;
 	final static int FAST = 200, SLOW = 100;
 	final static double DEG_ERR = 1.0, CM_ERR = 1;
@@ -29,19 +35,78 @@ public class Navigation {
 	private int i = 1;
 
 	
-	public Navigation(Odometer odo, Communicator comm) {
+	public Navigation(Odometer odo, UltrasonicSensor us) {
 		this.odo = odo;
-		this.comm = comm;
+		this.robot = odo.getRobot();
+		this.grid = odo.getGrid();
+		this.us = us;
 	}
 	
-	public TwoWheeledRobot getRobot(){
-		return this.robot;
+	/*
+	*  Navigation is done by generating a path of points, and then sequentially
+	*  following these steps:
+	*    - check if there is a block to close. If there is, report the location
+	*      of the block
+	*    - if there was a block, restart, otherwise travel to point
+	*/
+	
+	public void navigateTo(Point destination) {
+		Point location = new Point((int) odo.getX(), (int) odo.getY());
+		LinkedList<Point> path = grid.getDirections(location, destination);
+		
+		while (path.size() > 0 && navigate(path));
+		
+		// recursively try again if we didn't make it
+		if (path.size() > 0) navigateTo(destination);
 	}
 	
-	public Odometer getOdometer() {
-		return this.odo;
+	private boolean navigate(LinkedList<Point> path) {
+		Point collision = collisionPoint();
+		
+		if (collision == null) {
+			travelTo(path.remove(0));
+			return true;
+		} else {
+			grid.report(collision.x, collision.y);
+			return false;
+		}
+	}
+		
+	private Point collisionPoint() {
+		int distance = getDistance();
+		
+		Point point = null;
+		
+		// Rishab: the distance for a collision must be determined experimentally
+		
+		if (distance < 40) {
+			double angle = Math.toRadians(odo.getTheta());
+		
+			int x = (int) (distance * Math.cos(angle) + odo.getX());
+			int y = (int) (distance * Math.sin(angle) + odo.getY());
+			
+			point = new Point(x, y);
+		}
+		
+		return point;
 	}
 	
+	private int getDistance() {
+		
+		// Rishab: possibly need to do multiple readings here
+		
+		return us.getDistance();
+	}
+	
+	/*
+	*  Travelling simply moves the robot to (x, y) assuming the path is safe. It
+	*  must only be used for short journeys. 
+	*/
+		
+	public void travelTo(Point point) {
+		travelTo(point.x, point.y);
+	}
+		
 	public void travelTo(double x, double y) {
 		// USE THE FUNCTIONS setForwardSpeed and setRotationalSpeed from TwoWheeledRobot!
 		
@@ -95,14 +160,14 @@ public class Navigation {
 		Motor.B.setSpeed(ROTATE_SPEED);			
 				
 		double correctedAngle = angle - odo.getTheta();
-				
+		
 		correctedAngle = minTheta(correctedAngle);
-				
+		
 		Motor.A.rotate(convertAngle(leftRadius, width, correctedAngle), true);
 		Motor.B.rotate(-convertAngle(rightRadius, width, correctedAngle), false);
-				
+		
 		Sound.beep();
-				
+		
 		Motor.A.stop();
 		Motor.B.stop();
 	}
@@ -244,10 +309,32 @@ public class Navigation {
 	
 	}
 	
-	public void stop()
-	{
-		Motor.A.stop();
-		Motor.B.stop();
+	public void stop() {
+		robot.stop();
+	}
+	
+	
+	
+	
+	/*
+	*  Simple getters for internal objects. Passing in Navigation object gives
+	*  access to Odometer, Robot, UltrasonicSensor, and Grid.
+	*/
+	
+	public TwoWheeledRobot getRobot(){
+		return this.robot;
+	}
+	
+	public Odometer getOdometer() {
+		return this.odo;
+	}
+	
+	public Grid getGrid() {
+		return this.grid;
+	}
+	
+	public UltrasonicSensor getUltrasonicSensor() {
+		return this.us;
 	}
 	
 	

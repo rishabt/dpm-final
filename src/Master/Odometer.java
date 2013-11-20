@@ -6,15 +6,17 @@ import lejos.util.TimerListener;
 public class Odometer implements TimerListener {
 	public static final int DEFAULT_PERIOD = 25;
 	private TwoWheeledRobot robot;
+	private Grid grid;
 	private Timer odometerTimer;
 	// position data
 	private Object lock;
 	private double x, y, theta;
 	private double [] oldDH, dDH;
 	
-	public Odometer(TwoWheeledRobot robot, int period, boolean start) {
+	public Odometer(TwoWheeledRobot robot, Grid grid, int period) {
 		// initialise variables
 		this.robot = robot;
+		this.grid = grid;
 		odometerTimer = new Timer(period, this);
 		x = 0.0;
 		y = 0.0;
@@ -23,21 +25,12 @@ public class Odometer implements TimerListener {
 		dDH = new double [2];
 		lock = new Object();
 		
-		// start the odometer immediately, if necessary
-		if (start)
-			odometerTimer.start();
+		// start the odometer immediately
+		odometerTimer.start();			
 	}
 	
-	public Odometer(TwoWheeledRobot robot) {
-		this(robot, DEFAULT_PERIOD, false);
-	}
-	
-	public Odometer(TwoWheeledRobot robot, boolean start) {
-		this(robot, DEFAULT_PERIOD, start);
-	}
-	
-	public Odometer(TwoWheeledRobot robot, int period) {
-		this(robot, period, false);
+	public Odometer(TwoWheeledRobot robot, Grid grid) {
+		this(robot, grid, DEFAULT_PERIOD);
 	}
 	
 	public void timedOut() {
@@ -54,8 +47,18 @@ public class Odometer implements TimerListener {
 			y += dDH[0] * Math.cos(Math.toRadians(theta));
 		}
 		
+		grid.checkin((int) x, (int) y);
+		
 		oldDH[0] += dDH[0];
 		oldDH[1] += dDH[1];
+	}
+	
+	public TwoWheeledRobot getRobot() {
+		return robot;
+	}
+	
+	public Grid getGrid() {
+		return grid;
 	}
 	
 	// accessors

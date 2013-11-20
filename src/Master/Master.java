@@ -29,17 +29,20 @@ public class Master {
 		TwoWheeledRobot robot = new TwoWheeledRobot(Motor.A, Motor.B);
 		LCD.drawString("* robot ready", 0, 1);
 		
-		Odometer odo = new Odometer(robot, true);
+		Grid grid = new Grid(30 * 8, 30 * 8);
+		Odometer odo = new Odometer(robot, grid);
 		LCD.drawString("* odometer on", 0, 2);
 		
-		Navigation nav = new Navigation(odo, communicator);
+		
+		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
+		LCD.drawString("* u.s. ready", 0, 5);
+		
+		Navigation nav = new Navigation(odo, us);
 		LCD.drawString("* nav ready", 0, 3);
 				
 		// LCDInfo lcd = new LCDInfo(odo);
 		// LCD.drawString("* lcd info on", 0, 4);
-		
-		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
-		LCD.drawString("* u.s. ready", 0, 5);
+
 		
 		LightSensor ls = new LightSensor(SensorPort.S3);
 		LCD.drawString("* l.s. ready", 0, 6);
@@ -47,8 +50,6 @@ public class Master {
 		ColorSensor cs = new ColorSensor(SensorPort.S2);
 		 
 		ObjectDetector objectDetector = new ObjectDetector(nav, us, cs);
-		
-		Grid grid = new Grid(30 * 8, 30 * 8);
 		
 		// LOCALIZE
 		
