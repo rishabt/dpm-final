@@ -2,27 +2,84 @@ package Master;
 
 import lejos.nxt.*;
 
-public class ObjectDetector extends Thread{
+public class ObjectDetector {
+	private ColorSensor cs;
+	private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
+	private TwoWheeledRobot robot;
+	private Odometer odo;
+	private Navigation nav;
+	// static int approximate = 7;
 	
-	private static ColorSensor cs = new ColorSensor(SensorPort.S2);
-	private static UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
-	private static TwoWheeledRobot robot;
-	static Odometer odo;
+	private static final int ROTATE_SPEED = 20;
 	
-	static Navigation nav;
-	static int approximate = 7;
-	
-	public ObjectDetector(Odometer odo, Navigation nav, TwoWheeledRobot robot){
-		this.odo = odo;
-		this.nav = nav;		
-		this.robot = robot;
+	public ObjectDetector(Navigation nav, UltrasonicSensor us, ColorSensor cs) {
+		this.nav = nav;
+		this.robot = nav.getRobot();
+		this.us = us;
+		this.cs = cs;
+		this.odo = nav.getOdometer();
 	}
+	
+	public boolean detect(int direction) {
+		double angle = odo.getTheta();				
+		robot.setSpeeds(0.0, direction * ROTATE_SPEED);
+		
+		int distance = 255, low = 255;
+		int prevDistance = distance;
+		
+		int trueCount = 0, allCount = 0;
+		
+		while ((trueCount < 2 || allCount < 5) && angleWithin(angle, 90.0)) {
+			LCD.clear();
+			LCD.drawString("true: " + trueCount, 0, 2);
+			LCD.drawString("all:  " + allCount, 0, 3);
+			LCD.drawString("dist: " + distance, 0, 4);
+			LCD.drawString("low:  " + low, 0, 5);
+			
+			distance = getDistance();
+			
+			boolean unreliable = distance < 50 && prevDistance > 200;
+			if (distance < 120 && !unreliable && distance < low) low = distance;
+			
+			if (distance > low) {
+				if (distance < 255) {
+					trueCount ++;
+				} 
+				allCount ++;
+			}
+			
+			if (distance < 255) prevDistance = distance;
+			
+			try { Thread.sleep(10); } catch (Exception e) {}
+		}
+		
+		robot.stop();
+		return angleWithin(angle, 90.0);
+	}
+	
+	public boolean angleWithin(double angle, double degrees) {
+		double theta = odo.getTheta();
+		double diff = Odometer.minimumAngleFromTo(angle, theta);
+		return Math.abs(diff) < degrees;
+	}
+	
+	public int getDistance() {
+		int[] distances = new int[]{ us.getDistance(), us.getDistance(), us.getDistance() };
+		int distance = 255;
+		for (int dist : distances) {
+			distance = Math.min(dist, distance);
+		}
+		return distance;
+	}
+	/*
+	
 	
 	public enum type { OBJECT, BLOCK }										//Enum gives the types of objects
 	
 	public static type TYPE;
 	
-	public static boolean detector() throws Exception{
+		
+	public static boolean detector() throws Exception {
 		
 		boolean result = false;	
 		boolean detecting = true;
@@ -32,7 +89,7 @@ public class ObjectDetector extends Thread{
 		Motor.A.setSpeed(100);												//Sets the forward speed of both left and right motors
 		Motor.B.setSpeed(100);
 		
-		while(detecting){													//Runs a while loop
+		while(detecting) {													//Runs a while loop
 			
 			//Sound.buzz();
 			//LCD.drawInt(us.getDistance(), 0, 2);
@@ -87,5 +144,6 @@ public class ObjectDetector extends Thread{
 		return result;
 		
 	}
+	*/
 
 }

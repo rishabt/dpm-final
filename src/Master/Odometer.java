@@ -68,7 +68,7 @@ public class Odometer implements TimerListener {
 	}
 	
 	public void setTheta(double theta){
-		this.theta = theta;
+		this.theta = fixDegAngle(theta);
 	}
 	
 	public void setY(double Y){
@@ -88,7 +88,7 @@ public class Odometer implements TimerListener {
 		synchronized (lock) {
 			if (update[0]) x = pos[0];
 			if (update[1]) y = pos[1];
-			if (update[2]) theta = pos[2];
+			if (update[2]) theta = fixDegAngle(pos[2]);
 		}
 	}
 	

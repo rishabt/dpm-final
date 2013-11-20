@@ -99,4 +99,8 @@ public class TwoWheeledRobot {
 		else
 			rightMotor.setSpeed((int)rightSpeed);
 	}
+	
+	public void stop() {
+		setSpeeds(0.0, 0.0);
+	}
 }

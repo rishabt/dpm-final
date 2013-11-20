@@ -35,8 +35,8 @@ public class Master {
 		Navigation nav = new Navigation(odo, communicator);
 		LCD.drawString("* nav ready", 0, 3);
 				
-		LCDInfo lcd = new LCDInfo(odo);
-		LCD.drawString("* lcd info on", 0, 4);
+		// LCDInfo lcd = new LCDInfo(odo);
+		// LCD.drawString("* lcd info on", 0, 4);
 		
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
 		LCD.drawString("* u.s. ready", 0, 5);
@@ -44,22 +44,32 @@ public class Master {
 		LightSensor ls = new LightSensor(SensorPort.S3);
 		LCD.drawString("* l.s. ready", 0, 6);
 		
+		ColorSensor cs = new ColorSensor(SensorPort.S2);
+		 
+		ObjectDetector objectDetector = new ObjectDetector(nav, us, cs);
+		
+		Grid grid = new Grid(30 * 8, 30 * 8);
+		
 		// LOCALIZE
 		
-		USLocalizer localizer = new USLocalizer(odo, us);
-		localizer.doLocalization();
+		int option = Button.waitForAnyPress();
 		
-		// SEARCH & SCORE
-
-		if (Button.waitForAnyPress() == Button.ID_LEFT) {
-				
-//			USLocalizer usl = new USLocalizer(odo, us, USLocalizer.LocalizationType.FALLING_EDGE);
-//			usl.doLocalization();
-			//try { Thread.sleep(2000); } catch (InterruptedException e) {}
-				
-			nav.travelTo(60, 60);
+		if (option == Button.ID_LEFT) {
+			USLocalizer localizer = new USLocalizer(odo, us);
+			localizer.doLocalization();
+		} else if(option == Button.ID_RIGHT) {
+			boolean detected = objectDetector.detect(1);
+			// LCD.clear();
+			
+			if (detected) {
+				LCD.drawString("DETECTED", 0, 1);
+			} else {
+				LCD.drawString("FAIL", 0, 1);
+			}
 			
 			/*
+			nav.travelTo(60, 60);
+			
 			nav.travelTo(20, 80);
 				
 			nav.travelTo(60, 80);

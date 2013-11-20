@@ -22,7 +22,7 @@ public class Navigation {
 	final static int FAST = 200, SLOW = 100;
 	final static double DEG_ERR = 1.0, CM_ERR = 1;
 	
-	private static double finalX, finalY;
+	private static double finalX = 5.0, finalY = 5.0;
 	
 	private boolean objectCollected = false;
 	
@@ -34,8 +34,12 @@ public class Navigation {
 		this.comm = comm;
 	}
 	
-	public TwoWheeledRobot getTwoWheeledRobot(){
+	public TwoWheeledRobot getRobot(){
 		return this.robot;
+	}
+	
+	public Odometer getOdometer() {
+		return this.odo;
 	}
 	
 	public void travelTo(double x, double y) {
@@ -54,6 +58,7 @@ public class Navigation {
 		
 		while (Math.abs(x - odo.getX()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR) {
 			
+			/*
 			if(us.getDistance() <= 25 && objectCollected == false){
 				obstacleAvoider(x, y);					
 				break;
@@ -63,6 +68,7 @@ public class Navigation {
 				objectDeliver(finalX, finalY);
 				break;
 			}
+			*/
 				
 
 			robot.setForwardSpeed(10);
@@ -120,6 +126,7 @@ public class Navigation {
 		Motor.B.forward();
 	}
 	
+	/*
 	public void obstacleAvoider(double x, double y){
 		
 		Sound.beepSequence();
@@ -160,7 +167,7 @@ public class Navigation {
 						moveBy(45);
 						travelTo(x,y);
 						
-						moveBy(-30);
+						moveBy(-10);
 						
 						break;
 					}
@@ -169,7 +176,7 @@ public class Navigation {
 			}
 			
 			
-			if (ObjectDetector.detector() == true) {
+			if (true) {
 				
 				// tell the slave brick to lift the block
 				comm.bluetoothSend("lift");
@@ -183,7 +190,8 @@ public class Navigation {
 		i++;
 		
 	}
-	
+	*/
+		
 	public void objectDeliver(double x, double y){
 		Sound.beepSequenceUp();
 		

@@ -20,13 +20,10 @@ public class USLocalizer {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.us = us;
-		
-		// switch off the ultrasonic sensor
-		us.off();
 	}
 	
 	public void doLocalization() {
-		double [] pos = new double [3];
+		double[] pos = new double [3];
 		double angleA = 0, angleB = 0;
       double progress = 0;
 	   int distance = getFilteredData();
@@ -139,12 +136,12 @@ public class USLocalizer {
 	       Motor.B.setSpeed(80);
 		       
 	         if(angleA < angleB){
-	    	   Motor.A.rotate(convertAngle(2.885, 16.755,  value-95), true);
-			   Motor.B.rotate(-convertAngle(2.885, 16.755, value-95),false);  
+	    	   Motor.A.rotate(convertAngle(2.885, 16.755,  value-87), true);
+			   Motor.B.rotate(-convertAngle(2.885, 16.755, value-87),false);  
 	         }
 	         if(angleA > angleB){
-	           Motor.A.rotate(convertAngle(2.885, 16.755,  -value-16), true);
-			   Motor.B.rotate(-convertAngle(2.885, 16.755, -value-16),false);  
+	           Motor.A.rotate(convertAngle(2.885, 16.755,  -value-8), true);
+			   Motor.B.rotate(-convertAngle(2.885, 16.755, -value-8),false);  
 	         }
 		         
 			   try { Thread.sleep(100); } catch (InterruptedException e) {}
