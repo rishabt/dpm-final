@@ -8,8 +8,6 @@ import Support.Communicator;
 import java.util.LinkedList;
 
 public class Navigation {
-	// put your navigation code here 
-	// NAVIGATION USED AS A MIX FROM LAST LAB AND FROM THE GIVEN CODE AND SOME EXTRA METHODS ADDED
 	
 	private Odometer odo;
 	private UltrasonicSensor us;
@@ -95,7 +93,22 @@ public class Navigation {
 		
 		// Rishab: possibly need to do multiple readings here
 		
-		return us.getDistance();
+		int filter = 0;
+		
+		int[] distances = new int[8];
+		
+		int minimum = 255;
+		
+		us.getDistances(distances);
+		
+		for(int i = 0; i < distances.length; i++){
+			if(distances[i] < minimum){
+				minimum = distances[i];
+			}
+		}
+		
+		
+		return minimum;
 	}
 	
 	/*
@@ -108,13 +121,14 @@ public class Navigation {
 	}
 		
 	public void travelTo(double x, double y) {
-		// USE THE FUNCTIONS setForwardSpeed and setRotationalSpeed from TwoWheeledRobot!
 		
 		double requiredAngle;
 		
 		boolean obstacle = false;
 		
 		requiredAngle = Math.toDegrees((Math.atan2(x - odo.getX(), y - odo.getY())));
+		
+		requiredAngle = minTheta(requiredAngle);
 		
 //		if (requiredAngle > Math.PI)
 //			requiredAngle = requiredAngle - 2*Math.PI; 
@@ -123,18 +137,6 @@ public class Navigation {
 		
 		while (Math.abs(x - odo.getX()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR) {
 			
-			/*
-			if(us.getDistance() <= 25 && objectCollected == false){
-				obstacleAvoider(x, y);					
-				break;
-				} 
-			
-			else if(us.getDistance() <= 25 && objectCollected == true){
-				objectDeliver(finalX, finalY);
-				break;
-			}
-			*/
-				
 
 			robot.setForwardSpeed(10);
 		}
@@ -173,7 +175,7 @@ public class Navigation {
 	}
 	
 	
-	public int convertDistance(double radius, double distance) {							//Copied same from Lab 2 
+	public int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
@@ -181,123 +183,6 @@ public class Navigation {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
-
-	
-	public void goForward(){
-		Motor.A.setSpeed(100);
-		Motor.B.setSpeed(100);
-		
-		Motor.A.forward();
-		Motor.B.forward();
-	}
-	
-	/*
-	public void obstacleAvoider(double x, double y){
-		
-		Sound.beepSequence();
-		
-		int filter = 0;
-		
-		try {
-			if (ObjectDetector.detector() == false){
-				if (i % 2 != 0){
-					turnTo(odo.getTheta() + 90);
-					Sound.beepSequenceUp();
-				}
-				
-				else
-					turnTo(odo.getTheta() - 90);
-				
-				
-				moveBy(35);
-				
-				
-				if (i % 2 != 0)
-					turnTo(odo.getTheta() - 90);
-				
-				else
-					turnTo(odo.getTheta() + 100);
-				
-				
-				while (true){
-				
-					if(us.getDistance() >= 55){
-						filter ++;
-					}
-					
-					else
-						turnTo(odo.getTheta() + 15);
-					
-					if(filter >= 10){
-						moveBy(45);
-						travelTo(x,y);
-						
-						moveBy(-10);
-						
-						break;
-					}
-				}
-				
-			}
-			
-			
-			if (true) {
-				
-				// tell the slave brick to lift the block
-				comm.bluetoothSend("lift");
-			}
-			
-			
-		} 
-		
-		catch (Exception e) {}
-		
-		i++;
-		
-	}
-	*/
-		
-	public void objectDeliver(double x, double y){
-		Sound.beepSequenceUp();
-		
-		int filter = 0;
-		
-		if(i % 2 != 0){
-			turnTo(odo.getTheta() + 90);
-		}
-		
-		else
-			turnTo(odo.getTheta() - 90);
-		
-		moveBy(35);
-		
-		if(i % 2 != 0){
-			turnTo(odo.getTheta() - 90);
-		}
-		
-		else
-			turnTo(odo.getTheta() + 90);
-		
-		
-		while (true){
-			
-			if(us.getDistance() >= 55){
-				filter ++;
-			}
-			
-			else
-				turnTo(odo.getTheta() + 15);
-			
-			if(filter >= 10){
-				moveBy(45);
-				travelTo(x,y);
-				break;
-			}
-		}
-		
-		i++;
-		
-	}
 	
 	public void moveBy(int distance){
 		
@@ -336,15 +221,5 @@ public class Navigation {
 	public UltrasonicSensor getUltrasonicSensor() {
 		return this.us;
 	}
-	
-	
-	
-//	public void startRotating(){											//Some helper methods created
-//		robot.setRotationSpeed(ROTATE_SPEED);
-//	}
-//	
-//	public void startRotatingCounter(){
-//		robot.setRotationSpeed(-10);
-//	}
 	
 }
