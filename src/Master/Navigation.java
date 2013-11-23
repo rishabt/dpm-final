@@ -93,7 +93,22 @@ public class Navigation {
 		
 		// Rishab: possibly need to do multiple readings here
 		
-		return us.getDistance();
+		int filter = 0;
+		
+		int[] distances = new int[8];
+		
+		int minimum = 255;
+		
+		us.getDistances(distances);
+		
+		for(int i = 0; i < distances.length; i++){
+			if(distances[i] < minimum){
+				minimum = distances[i];
+			}
+		}
+		
+		
+		return minimum;
 	}
 	
 	/*
@@ -106,13 +121,14 @@ public class Navigation {
 	}
 		
 	public void travelTo(double x, double y) {
-		// USE THE FUNCTIONS setForwardSpeed and setRotationalSpeed from TwoWheeledRobot!
 		
 		double requiredAngle;
 		
 		boolean obstacle = false;
 		
 		requiredAngle = Math.toDegrees((Math.atan2(x - odo.getX(), y - odo.getY())));
+		
+		requiredAngle = minTheta(requiredAngle);
 		
 //		if (requiredAngle > Math.PI)
 //			requiredAngle = requiredAngle - 2*Math.PI; 
@@ -121,18 +137,6 @@ public class Navigation {
 		
 		while (Math.abs(x - odo.getX()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR) {
 			
-			/*
-			if(us.getDistance() <= 25 && objectCollected == false){
-				obstacleAvoider(x, y);					
-				break;
-				} 
-			
-			else if(us.getDistance() <= 25 && objectCollected == true){
-				objectDeliver(finalX, finalY);
-				break;
-			}
-			*/
-				
 
 			robot.setForwardSpeed(10);
 		}
@@ -171,7 +175,7 @@ public class Navigation {
 	}
 	
 	
-	public int convertDistance(double radius, double distance) {							//Copied same from Lab 2 
+	public int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
