@@ -126,7 +126,7 @@ public class Grid {
 		}		
 		return path;
 	}
-	
+		
 	// sort points by min distance to destination
 	private LinkedList<Point> sort(LinkedList<Point> points, Point destination) {
 		LinkedList<Point> sorted = new LinkedList<Point>();	
