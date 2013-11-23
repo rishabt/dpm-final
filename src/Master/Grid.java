@@ -3,6 +3,7 @@ package Master;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.HashMap;
 
 public class Grid {
@@ -15,7 +16,7 @@ public class Grid {
 	// separation in centimeters
 	private static final int SEPARATION = 10;
 	private int[][] grid;
-		
+			
 	// external width and height in centimeters
 	public Grid(int width, int height) {
 		this.width = width;
@@ -27,38 +28,66 @@ public class Grid {
 		
 		reportEdges();
 	}
+	
+	
+	// OBSTACLE AVOIDANCE
+
 
 	public boolean unsafe(Point point) {
-		return unsafe(sep(point.x), sep(point.y));
+		return unsafe(row(point.x), col(point.y));
 	}
 	
 	public boolean safe(Point point) {
 		return !unsafe(point);
 	}
 	
+	private boolean unsafe(int row, int column) {
+		return grid[row][column] < 0;
+	}
+	
+	private boolean safe(int row, int column) {
+		return !unsafe(row, column);
+	}
+	
 	public void report(int x, int y) {
-		int row = sep(x), col = sep(y);
+		int row = row(x), col = col(y);
 		
-		if (row < rows && col < columns) {
-			int current = grid[row][col];
-			int value;
-			if (current >= 0) {
-				value = -1;
-			} else {
-				value = current - 1;
-			}
-			grid[row][col] = value;
+		int current = grid[row][col];
+		int value;
+		if (current >= 0) {
+			value = -1;
+		} else {
+			value = current - 1;
+		}
+		grid[row][col] = value;
+	}
+	
+	
+	// SEARCH
+	
+	
+	public void checkin(int x, int y) {
+		int row = row(x), col = col(y);
+		int current = grid[row][col];
+		if (current > UNSAFE) {
+			grid[row][col] = current + 1;
 		}
 	}
 	
-	public void checkin(int x, int y) {
-		int row = sep(x), col = sep(y);
-		if (row < rows && col < columns) {
-			int current = grid[row][col];
-			if (current > UNSAFE) {
-				grid[row][col] = current + 1;
+	public Point wanderFrom(Point point) {
+		Point freshest = null;
+		int minCount = Integer.MAX_VALUE;
+		
+		LinkedList<Point> points = safeNeighborsOf(point);
+		
+		for (Point p : safeNeighborsOf(point)) {
+			int count = grid[row(p.x)][col(p.y)];
+			if (count < minCount) {
+				minCount = count;
+				freshest = p;
 			}
 		}
+		return freshest;
 	}
 	
 	public Point getFreshPoint() {
@@ -75,46 +104,66 @@ public class Grid {
 			}
 		}
 		return freshest;
-	}	
-
-	public LinkedList<Point> getDirections(Point a, Point b) {
-		return shortestPath(a, b);
 	}
 	
-	// x -> row, y -> column
-	private int sep(int coordinate) {
-		return coordinate / SEPARATION;
+	
+	// NAVIGATION (SHORTEST PATH)
+	
+	
+	public LinkedList<Point> depthFirst(Point a, Point b) {
+		LinkedList<Point> path = null;
+		if (a.equals(b)) {
+			path = new LinkedList<Point>();
+			path.add(a);	
+		} else {
+			for (Point point : sort(safeNeighborsOf(a), b)) {
+				path = depthFirst(point, b);
+				if (path != null) {
+					path.add(0, a);
+					break;
+				}
+			}
+		}		
+		return path;
 	}
 	
-	// row -> x, column -> y
-	private int coord(int separation) {
-		return separation * SEPARATION;
-	}
-	
-	// (row, column) -> (x, y)
-	private Point pointFor(int row, int column) {
-		return new Point(coord(row), coord(column));
-	}
-	
-	private boolean unsafe(int row, int column) {
-		return grid[row][column] < 0;
-	}
-	
-	private boolean safe(int row, int column) {
-		return !unsafe(row, column);
+	// sort points by min distance to destination
+	private LinkedList<Point> sort(LinkedList<Point> points, Point destination) {
+		LinkedList<Point> sorted = new LinkedList<Point>();	
+		while (!points.isEmpty()) {
+			Point min = closest(points, destination);
+			points.remove(min);
+			sorted.add(min);
+		}
+		return sorted;
 	}
 	
 	/*
-	* shortestPath(a, b) uses Djikstra's algorithm to find the 
-	* shortest path between point a and b
+	*  closest([points], point) returns the closest point in distance to the
+	*  destination
 	*/
-	private LinkedList<Point> shortestPath(Point a, Point b) {		
+	private Point closest(LinkedList<Point> points, Point destination) {
+		Point min = null;
+		int minDistance = Integer.MAX_VALUE;
+		for (Point point : points) {
+			int distance = point.distanceTo(destination);
+			if (distance < minDistance) {
+				minDistance = distance;
+				min = point;
+			}
+		}
+		return min;
+	}
+	
+	// Djikstra's algorithm
+	public LinkedList<Point> breadthFirst(Point a, Point b) {
 		HashMap<Point, Point> predecessors = new HashMap<Point, Point>();
 		HashMap<Point, Integer> distances = new HashMap<Point, Integer>();
 		Queue<Point> queue = new Queue<Point>();
 		distances.put(a, 0);
 		
 		Point current = a;
+				
 		while (current != null && !current.equals(b)) {
 			for (Point neighbor : safeNeighborsOf(current)) {				
 				Integer prevDistance = distances.get(neighbor);
@@ -131,7 +180,6 @@ public class Grid {
 			}
 			current = (Point) queue.pop();
 		}
-		
 		return recreatePath(predecessors, current);
 	}
 	
@@ -181,6 +229,35 @@ public class Grid {
 			new Point(x, y + SEPARATION),
 			new Point(x + SEPARATION, y + SEPARATION)
 		};
+	}
+
+	
+	// HELPERS
+	
+	
+	// x -> row
+	private int row(int x) {
+		return Math.min(rows - 1, Math.max(0, sep(x)));		
+	}
+	
+	// y -> column
+	private int col(int y) {
+		return Math.min(columns - 1, Math.max(0, sep(y)));
+	}
+	
+	// x -> row, y -> column (no checks)
+	private int sep(int coordinate) {
+		return coordinate / SEPARATION;
+	}
+	
+	// row -> x, column -> y
+	private int coord(int separation) {
+		return separation * SEPARATION;
+	}
+	
+	// (row, column) -> (x, y)
+	private Point pointFor(int row, int column) {
+		return new Point(coord(row), coord(column));
 	}
 	
 	// prints large grid. not suitable for lejos LCD

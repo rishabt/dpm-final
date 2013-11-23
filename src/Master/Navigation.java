@@ -52,7 +52,7 @@ public class Navigation {
 	
 	public void navigateTo(Point destination) {
 		Point location = new Point((int) odo.getX(), (int) odo.getY());
-		LinkedList<Point> path = grid.getDirections(location, destination);
+		LinkedList<Point> path = grid.depthFirst(location, destination);
 		
 		while (path.size() > 0 && navigate(path));
 		
