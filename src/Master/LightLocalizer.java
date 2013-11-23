@@ -6,7 +6,8 @@ public class LightLocalizer {
 	
 	private Odometer odo;
 	private TwoWheeledRobot robot;
-	private LightSensor ls;
+	private LightSensor ls1;
+	private LightSensor ls2;
 	private double distance = 7.5;
 
 	int speed = 150; int count = 4;
@@ -14,13 +15,15 @@ public class LightLocalizer {
 	
 	public double[] position = new double[3];
 	
-	public LightLocalizer(Odometer odo, LightSensor ls) {			//Constructor to initialize all required objects
-		this.odo = odo;
+	public LightLocalizer(Navigation nav, LightSensor ls1, LightSensor ls2) {			//Constructor to initialize all required objects
+		this.odo = nav.getOdometer();
 		this.robot = odo.getTwoWheeledRobot();
-		this.ls = ls;
+		this.ls1 = ls1;
+		this.ls2 = ls2;
 		
 		// turn on the light
-		ls.setFloodlight(true);
+		ls1.setFloodlight(true);
+		ls2.setFloodlight(true);
 	}
 	
 	public void doLocalization(){
@@ -33,29 +36,10 @@ public class LightLocalizer {
 		
 		while(condition){
 			
-			robot.setRotationSpeed(30);
-			
-//			if(ls.readNormalizedValue() <= 500){
-//				Sound.beep();
-//			}
-			
-			if(ls.readNormalizedValue() < 500){
-				gridAngles[i] = odo.getTheta();
-				Sound.beep();
-				
-				try{Thread.sleep(800);} catch(Exception e){}
-			}
-			
-			i++;
-			
-			if(i == 4)
-				condition = false;
-			
-			LCD.drawInt(ls.readNormalizedValue(), 0, 5);
 			
 		}
 			
-		//robot.setRotationSpeed(0);
+
 		
 		double thetaY = Math.abs(gridAngles[1] - gridAngles[3]);
 		
