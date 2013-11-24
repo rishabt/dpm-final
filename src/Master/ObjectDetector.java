@@ -8,7 +8,7 @@ public class ObjectDetector {
 	private TwoWheeledRobot robot;
 	private Odometer odo;
 	private Navigation nav;
-	// static int approximate = 7;
+	int approximate = 7;
 	
 	private static final int ROTATE_SPEED = 20;
 	
@@ -71,7 +71,6 @@ public class ObjectDetector {
 		}
 		return distance;
 	}
-	/*
 	
 	
 	public enum type { OBJECT, BLOCK }										//Enum gives the types of objects
@@ -79,7 +78,7 @@ public class ObjectDetector {
 	public static type TYPE;
 	
 		
-	public static boolean detector() throws Exception {
+	public boolean detector() throws Exception {
 		
 		boolean result = false;	
 		boolean detecting = true;
@@ -91,7 +90,7 @@ public class ObjectDetector {
 		
 		while(detecting) {													//Runs a while loop
 			
-			//Sound.buzz();
+			Sound.beepSequence();
 			//LCD.drawInt(us.getDistance(), 0, 2);
 			Motor.A.forward();												//Moves forward
 			Motor.B.forward();
@@ -108,9 +107,9 @@ public class ObjectDetector {
 				
 				Thread.sleep(500);											//Thread sleeps for 500 ms
 				
-				LCD.drawString(cs.getColor().getBlue() + "", 0 , 1);
-				LCD.drawString(cs.getColor().getGreen() + "", 0 , 3);
-				LCD.drawString(cs.getColor().getRed() + "", 0 , 5);
+//				LCD.drawString(cs.getColor().getBlue() + "", 0 , 1);
+//				LCD.drawString(cs.getColor().getGreen() + "", 0 , 3);
+//				LCD.drawString(cs.getColor().getRed() + "", 0 , 5);
 				
 				red= cs.getColor().getRed();								//We get the red, green and blue colour and stores them in variables
 				green= cs.getColor().getGreen();
@@ -119,9 +118,7 @@ public class ObjectDetector {
 				if(Math.abs(red-blue) <= approximate){						//The following test the conditions for detection					
 					LCD.drawString("Object", 0, 3);							//If the red - blue is within the approximate range then it is an object
 					TYPE = type.OBJECT;
-					//Sound.beep();
-//					nav.moveBy(20);
-//					nav.travelTo(80, 190);
+					Sound.beep();
 					result = true;
 					detecting = false;
 				}
@@ -130,7 +127,6 @@ public class ObjectDetector {
 					LCD.drawString("Block", 0, 3);							//Else a block
 					TYPE = type.BLOCK;
 					Sound.buzz();
-					//nav.moveBy(-10);
 					result = false;
 					detecting = false;
 				}
@@ -144,6 +140,6 @@ public class ObjectDetector {
 		return result;
 		
 	}
-	*/
+	
 
 }
