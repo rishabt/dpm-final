@@ -43,45 +43,27 @@ public class Search implements SearchController{
 		
 		boolean result = false;
 		
-		robot.setRotationSpeed(30);
-		
-		if(us.getDistance() <= 40){
-			try {
-				boolean object = obj.detector();
-				
-				result = true;
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		if(odo.getTheta() >= 90){
-			robot.setRotationSpeed(0);
-			
-			nav.turnTo(90);
-			
-			nav.moveBy(50);
-			
-			nav.turnTo(0);
-			
-			if(readUSDistance() >= 50){
-				nav.moveBy(50);
-			}
+		if(odo.getX() <= 290 && odo.getY() <= 290){
 			
 		}
-		
 		
 		return result;
+		
+		
 	}
 
 	
 	@Override
 	public int readUSDistance() {
 		// TODO Auto-generated method stub
+		
 		return this.distance;
+	}
+	
+	public int getDistance(){
+		us.ping();
+		
+		return us.getDistance();
 	}
 
 }

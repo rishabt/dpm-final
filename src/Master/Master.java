@@ -67,6 +67,8 @@ public class Master {
 		} else if(option == Button.ID_RIGHT) {
 			usPoller = new UltrasonicPoller(nav, us, search, communicator);
 			usPoller.start();
+			
+//			nav.turnTo(90);
 		}
 		
 		Button.waitForAnyPress();

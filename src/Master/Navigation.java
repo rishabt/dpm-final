@@ -26,7 +26,7 @@ public class Navigation {
 	final static int FAST = 200, SLOW = 100;
 	final static double DEG_ERR = 1.0, CM_ERR = 1;
 	
-	private static double finalX = 5.0, finalY = 5.0;
+	private static double finalX = 6.0, finalY = 5.0;
 	
 	private boolean objectCollected = false;
 	
@@ -35,8 +35,8 @@ public class Navigation {
 	
 	public Navigation(Odometer odo, UltrasonicSensor us) {
 		this.odo = odo;
-		this.robot = odo.getRobot();
-		this.grid = odo.getGrid();
+		this.robot = odo.getTwoWheeledRobot();
+		//this.grid = odo.getGrid();
 		this.us = us;
 	}
 	
@@ -124,11 +124,8 @@ public class Navigation {
 		
 		double requiredAngle;
 		
-		boolean obstacle = false;
-		
 		requiredAngle = Math.toDegrees((Math.atan2(x - odo.getX(), y - odo.getY())));
 		
-		requiredAngle = minTheta(requiredAngle);
 		
 //		if (requiredAngle > Math.PI)
 //			requiredAngle = requiredAngle - 2*Math.PI; 
@@ -137,8 +134,9 @@ public class Navigation {
 		
 		while (Math.abs(x - odo.getX()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR) {
 			
-
+			
 			robot.setForwardSpeed(10);
+			
 		}
 		
 		robot.setForwardSpeed(0);
@@ -156,11 +154,12 @@ public class Navigation {
 		return angle;
 	}
 	
-	public void turnTo(double angle){
+	public void turnTo(double angle) {
+		// USE THE FUNCTIONS setForwardSpeed and setRotationalSpeed from TwoWheeledRobot!
 		
 		Motor.A.setSpeed(ROTATE_SPEED);
 		Motor.B.setSpeed(ROTATE_SPEED);			
-				
+		
 		double correctedAngle = angle - odo.getTheta();
 		
 		correctedAngle = minTheta(correctedAngle);
@@ -172,6 +171,7 @@ public class Navigation {
 		
 		Motor.A.stop();
 		Motor.B.stop();
+		
 	}
 	
 	

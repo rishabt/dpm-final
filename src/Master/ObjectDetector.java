@@ -130,6 +130,7 @@ public class ObjectDetector {
 					TYPE = type.BLOCK;
 					Sound.buzz();
 					result = false;
+					nav.moveBy(-30);
 					detecting = false;
 				}
 				
