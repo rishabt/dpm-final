@@ -83,6 +83,8 @@ public class ObjectDetector {
 		boolean result = false;	
 		boolean detecting = true;
 		
+		Sound.beepSequence();
+		
 		int red,green,blue;
 		
 		Motor.A.setSpeed(100);												//Sets the forward speed of both left and right motors
@@ -90,7 +92,7 @@ public class ObjectDetector {
 		
 		while(detecting) {													//Runs a while loop
 			
-			Sound.beepSequence();
+			//Sound.beepSequence();
 			//LCD.drawInt(us.getDistance(), 0, 2);
 			Motor.A.forward();												//Moves forward
 			Motor.B.forward();

@@ -16,8 +16,8 @@ public class Navigation {
 	
 	private int ROTATE_SPEED = 50;
 	
-	private double leftRadius = 2.9;
-	private double rightRadius = 2.9;
+	private double leftRadius = 2.885;
+	private double rightRadius = 2.885;
 	private double width = 12.61;
 	
 	public double[] position = new double[3];
@@ -192,6 +192,11 @@ public class Navigation {
 		Motor.A.rotate(convertDistance(leftRadius, distance), true);
 		Motor.B.rotate(convertDistance(rightRadius, distance), false);
 	
+	}
+	
+	public void turnBy(int angle){
+		
+		turnTo(odo.getTheta() + angle);
 	}
 	
 	public void stop() {

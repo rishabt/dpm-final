@@ -3,51 +3,56 @@ package Slave;
 import lejos.nxt.*;
 
 public class Clamp {
+	public int count = 0;
 	
 	public static void lockMotors() {
 		Motor.A.stop();
 		Motor.B.stop();
-		Motor.C.stop();
+
 	}
+    public Clamp(int count){
+    	this.count = count;
+    }
     
     public static void lifting() {
-    	 NXTRegulatedMotor mastermotor = Motor.A;
+       NXTRegulatedMotor mastermotor = Motor.A;
        NXTRegulatedMotor leftclaw = Motor.B; 
-       NXTRegulatedMotor rightclaw = Motor.C;
-       int gangle = 95;
-       int langle = 95;
+ 
+       int gangle = 150;
+       int langle = 210;
        int cspeed = 50;
          
        mastermotor.setSpeed(cspeed);
     	 leftclaw.setSpeed(cspeed);
-    	 rightclaw.setSpeed(cspeed);
+
     	
     	mastermotor.rotate(langle);
     	//try { Thread.sleep(1000); } catch (InterruptedException e) {}
-    	leftclaw.rotate(gangle, true);
-		rightclaw.rotate(gangle, false);
+    	leftclaw.rotate(gangle);
+        mastermotor.rotate(-langle/3*2);
 		try { Thread.sleep(1000); } catch (InterruptedException e) {}
 		Sound.beep();
+		
 		lockMotors();
     }
     
     public static void dropping(){
     	NXTRegulatedMotor mastermotor = Motor.A;
         NXTRegulatedMotor leftclaw = Motor.B; 
-        NXTRegulatedMotor rightclaw = Motor.C;
+
         int gangle = 95;
         int langle = 95;
         int cspeed = 50;
         
         mastermotor.setSpeed(cspeed);
    	    leftclaw.setSpeed(cspeed);
-   	    rightclaw.setSpeed(cspeed);
+
    	    
-   	   mastermotor.rotate(-langle);
+   	   //mastermotor.rotate(-langle);
 		//try { Thread.sleep(2000); } catch (InterruptedException e) {}
-		mastermotor.rotate(langle);
-		leftclaw.rotate(-gangle,true);
-		rightclaw.rotate(-gangle,false);
+		mastermotor.rotate(langle/3*2);
+		leftclaw.rotate(-gangle);
+
 		Sound.beepSequence();
 		mastermotor.rotate(-100);
 		try { Thread.sleep(3000); } catch (InterruptedException e) {}
