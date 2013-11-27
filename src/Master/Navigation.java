@@ -28,18 +28,22 @@ public class Navigation {
 	
 	private static double finalX = 6.0, finalY = 5.0;
 	
-	private boolean objectCollected = false;
+	public boolean objectCollected = false;
 	
 	private int i = 1;
-	private int tempX;
-	private int tempY;
+	private double tempX;
+	private double tempY;
+	private Communicator comm;
 
 	
-	public Navigation(Odometer odo, UltrasonicSensor us) {
+	public Navigation(Odometer odo, UltrasonicSensor us, Communicator comm) {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		//this.grid = odo.getGrid();
 		this.us = us;
+		this.comm = comm;
+		
+		us.ping();
 	}
 	
 	/*
@@ -50,7 +54,7 @@ public class Navigation {
 	*    - if there was a block, restart, otherwise travel to point
 	*/
 	
-	public void navigateTo(Point destination) {
+	public void navigateTo(Point destination) throws Exception {
 		Point location = new Point((int) odo.getX(), (int) odo.getY());
 		LinkedList<Point> path = grid.depthFirst(location, destination);
 		
@@ -60,7 +64,7 @@ public class Navigation {
 		if (path.size() > 0) navigateTo(destination);
 	}
 	
-	private boolean navigate(LinkedList<Point> path) {
+	private boolean navigate(LinkedList<Point> path) throws Exception {
 		Point collision = collisionPoint();
 		
 		if (collision == null) {
@@ -118,11 +122,16 @@ public class Navigation {
 	*  must only be used for short journeys. 
 	*/
 		
-	public void travelTo(Point point) {
+	public void travelTo(Point point) throws Exception {
 		travelTo(point.x, point.y);
 	}
 		
-	public void travelTo(double x, double y) {
+	public boolean travelTo(double x, double y) throws Exception {
+		
+		boolean travelled = false;
+		
+		tempX = x;
+		tempY = y;
 		
 		double requiredAngle;
 		
@@ -136,16 +145,60 @@ public class Navigation {
 		
 		while (Math.abs(x - odo.getX()) > CM_ERR || Math.abs(y - odo.getY()) > CM_ERR) {
 			
+			us.ping();
+			
+			if(us.getDistance() <= 30){
+				obstacleAvoid();
+				break;
+			}
 			
 			robot.setForwardSpeed(10);
 			
 		}
 		
 		robot.setForwardSpeed(0);
-
+		
+		travelled = true;
+		
+		return travelled;
 		
 	}
 	
+	
+	public void obstacleAvoid() throws Exception{
+		
+		us.ping();
+		
+		boolean styrofoam = ObjectDetector.detector();
+		
+		if(styrofoam){																//If a Styrofoam block
+			moveBy(10);
+			comm.bluetoothSend("lift");
+		}
+		
+		else{
+			//moveBy(-10);
+			
+			turnBy(90);
+			
+			if(us.getDistance() >= 45){
+				moveBy(35);
+			}
+			
+			else{
+				turnBy(-180);
+				
+				if(us.getDistance() >= 45){
+					moveBy(35);
+				}
+				
+			}
+			
+			if(odo.getX() < 300 && odo.getY() < 300){
+				travelTo(tempX + 30, tempY + 30);
+			}
+		}
+	}
 	
 	public double minTheta(double angle){
 		if (angle < -180)

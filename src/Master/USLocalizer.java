@@ -20,7 +20,6 @@ public class USLocalizer {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.us = us;
-		us.off();
 	}
 	
 	public void doLocalization() {

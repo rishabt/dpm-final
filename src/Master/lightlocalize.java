@@ -3,6 +3,7 @@ package Master;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
 
 
@@ -27,13 +28,13 @@ public class lightlocalize {
     public void dolitlocalize(){
     	 int progress = 0;
     	 
-    	 Motor.A.rotate(-30, true);
-		 Motor.B.rotate(-30,false);
+    	 Motor.A.rotate(-15, true);
+		 Motor.B.rotate(-15,false);
 		 
     	 Motor.A.setSpeed(150);
 		 Motor.B.setSpeed(150);
-    	 Motor.A.rotate(convertAngle(2.885, width,  99), true);
-		 Motor.B.rotate(-convertAngle(2.885, width, 99),false);  
+    	 Motor.A.rotate(convertAngle(2.885, width,  92), true);
+		 Motor.B.rotate(-convertAngle(2.885, width, 92),false);  
        
 		 Motor.A.setSpeed(150);
 		 Motor.B.setSpeed(150);
@@ -66,8 +67,8 @@ public class lightlocalize {
 		    	 Motor.A.setSpeed(150);
 				 Motor.B.setSpeed(150);
 			
-		    	 Motor.A.rotate(convertAngle(2.885, width, -96), true);
-				 Motor.B.rotate(-convertAngle(2.885, width, -96),false); 
+		    	 Motor.A.rotate(convertAngle(2.885, width, -88), true);
+				 Motor.B.rotate(-convertAngle(2.885, width, -88),false); 
 				 
 				 Motor.A.setSpeed(150);
 				 Motor.B.setSpeed(150);
@@ -82,13 +83,21 @@ public class lightlocalize {
 				     if(lvalue < linevalue){
 				    	Motor.A.setSpeed(0);
 				    	Motor.B.setSpeed(100);
+				    	islighton2 = false;
 				     }
 				     
 				     if(rvalue < linevalue){
 				    	Motor.B.setSpeed(0);
 				    	Motor.A.setSpeed(100);
+				    	islighton2 = false;
 				     }
+				     
+				     
 				 }
+				 
+//				 Motor.A.setSpeed(200);
+//				 Motor.B.setSpeed(200);
+				 
 				 
 				     //updating the odometer.
 				     double[] pos = Master.initPosition;

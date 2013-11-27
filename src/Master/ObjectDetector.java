@@ -3,12 +3,12 @@ package Master;
 import lejos.nxt.*;
 
 public class ObjectDetector {
-	private ColorSensor cs;
-	private UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
+	private static ColorSensor cs;
+	private static UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
 	private TwoWheeledRobot robot;
-	private Odometer odo;
-	private Navigation nav;
-	int approximate = 7;
+	private static Odometer odo;
+	private static Navigation nav;
+	static int approximate = 7;
 	
 	private static final int ROTATE_SPEED = 20;
 	
@@ -78,10 +78,11 @@ public class ObjectDetector {
 	public static type TYPE;
 	
 		
-	public boolean detector() throws Exception {
+	public static boolean detector() throws Exception {
 		
 		boolean result = false;	
 		boolean detecting = true;
+		
 		
 		Sound.beepSequence();
 		
@@ -91,6 +92,8 @@ public class ObjectDetector {
 		Motor.B.setSpeed(100);
 		
 		while(detecting) {													//Runs a while loop
+			
+			us.ping();
 			
 			//Sound.beepSequence();
 			//LCD.drawInt(us.getDistance(), 0, 2);
@@ -130,11 +133,9 @@ public class ObjectDetector {
 					TYPE = type.BLOCK;
 					Sound.buzz();
 					result = false;
-					nav.moveBy(-30);
+					nav.moveBy(-20);
 					detecting = false;
-				}
-				
-				
+				}	
 				
 			}
 			

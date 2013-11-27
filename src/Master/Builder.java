@@ -2,7 +2,7 @@ package Master;
 
 import lejos.nxt.*;
 
-public class GarbageCollecter {
+public class Builder {
 	
 	private int[] greenZone;
 	private int[] redZone;
@@ -15,7 +15,7 @@ public class GarbageCollecter {
 	private double[] midGreen = new double[2];
 	private double[] midRed = new double[2];
 	
-	public GarbageCollecter(int[] greenZone, int[] redZone, UltrasonicSensor us, ColorSensor cs, Navigation nav){
+	public Builder(int[] greenZone, int[] redZone, UltrasonicSensor us, ColorSensor cs, Navigation nav){
 		this.greenZone = greenZone;
 		this.redZone = redZone;
 		this.us = us;
@@ -33,17 +33,17 @@ public class GarbageCollecter {
 	}
 	
 	
-	public void collect() throws Exception{
+	public void build() throws Exception{
 		
 		while(nav.objectCollected == false){
 			
 			if(Math.abs(odo.getX() - midRed[0]) < Math.abs(odo.getX() - midGreen[0])){
-				nav.travelTo(midRed[0], midRed[1]);
+				nav.travelTo(midGreen[0], midGreen[1]);
 				
 			}
 			
 			else{
-				nav.travelTo(midGreen[0] - 60, midGreen[1] - 60);
+				nav.travelTo(midRed[0] - 60, midRed[1] - 60);
 				
 				if(odo.getX() <= 290){
 					nav.turnBy(90);
@@ -58,7 +58,7 @@ public class GarbageCollecter {
 				
 				nav.turnBy(-80);
 				
-				nav.travelTo(midRed[0], midRed[1]);
+				nav.travelTo(midGreen[0], midGreen[1]);
 				
 			}
 			
