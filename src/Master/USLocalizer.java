@@ -8,8 +8,8 @@ import lejos.nxt.UltrasonicSensor;
 public class USLocalizer {
 	
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	public static double ROTATION_SPEED = 40;    
-	
+	public static double ROTATION_SPEED = 60;    
+	public static double width = 12.61;
 	private Odometer odo;
 	private TwoWheeledRobot robot;
 	private UltrasonicSensor us;
@@ -20,16 +20,18 @@ public class USLocalizer {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.us = us;
+		us.off();
 	}
 	
 	public void doLocalization() {
 		double[] pos = new double [3];
 		double angleA = 0, angleB = 0;
-      double progress = 0;
+       double progress = 0;
 	   int distance = getFilteredData();
 	   boolean initial = false;
 	   boolean isanglefinished = false;
-		   
+		
+	   
 			
 		// rotate the robot until it sees no wall
 	    // starting direction identification: if the starting feedback distance is more than 50,
@@ -39,12 +41,15 @@ public class USLocalizer {
 	    	distance = getFilteredData();
 	    	if(distance < walld){
 	    		initial = true;
-	    		progress = 0;		    		
+	    		progress = 0;	
+	    		Sound.beepSequence();
+	    		//try { Thread.sleep(100); } catch (InterruptedException e) {}    		
 	    	}
 	    	else if (distance > walld ){
 	    		initial = false;
 	    		progress = 1;
-	    		Sound.beep();		    		
+	    		Sound.beep();	
+	    		//try { Thread.sleep(100); } catch (InterruptedException e) {}
 		    		
 	    	}
 	    }
@@ -63,7 +68,10 @@ public class USLocalizer {
 		    	
 	    	if(distance > walld ){	    		
 	    		distance = getFilteredData();
+	    		Motor.A.resetTachoCount();
+	    		Motor.B.resetTachoCount();
 	    		progress = 1;
+	    		//Sound.beep();
 	    		odo.setPosition(reset,reset1);
 	    		initial = false;//quit the initial process
 	    	Sound.beep();
@@ -71,18 +79,18 @@ public class USLocalizer {
 	    	}	
 		    	
 	    }
-	    try { Thread.sleep(100); } catch (InterruptedException e) {}
+	    //try { Thread.sleep(100); } catch (InterruptedException e) {}
 	    // ****progress 1 starts here: 
 	    // rotate until reaching a distance less than 40. when it does,
 	    // stop the vehicle temporarily and latch angleA.
 	    // then proceed to progress 2.
-	    while (progress == 1 && distance > walld-1 ){
-		    	
+	    while (progress == 1 && distance > walld ){
+	    	
              odo.getPosition(pos);
 	    	distance = getFilteredData();
 	    	robot.setRotationSpeed(ROTATION_SPEED);
 		    			    	
-	    	if(distance < walld+1){		    		
+	    	if(distance < walld){		    		
 	    		robot.setRotationSpeed(-ROTATION_SPEED);
 	    		angleA = pos[2];		    		
 	    		progress = 2;		    				    				    		
@@ -136,12 +144,12 @@ public class USLocalizer {
 	       Motor.B.setSpeed(80);
 		       
 	         if(angleA < angleB){
-	    	   Motor.A.rotate(convertAngle(2.885, 16.755,  value-87), true);
-			   Motor.B.rotate(-convertAngle(2.885, 16.755, value-87),false);  
+	    	   Motor.A.rotate(convertAngle(2.885, width,  value-70), true);
+			   Motor.B.rotate(-convertAngle(2.885, width, value-70),false);  
 	         }
 	         if(angleA > angleB){
-	           Motor.A.rotate(convertAngle(2.885, 16.755,  -value-8), true);
-			   Motor.B.rotate(-convertAngle(2.885, 16.755, -value-8),false);  
+	           Motor.A.rotate(convertAngle(2.885, width,  -value+15), true);
+			   Motor.B.rotate(-convertAngle(2.885, width, -value+15),false);  
 	         }
 		         
 			   try { Thread.sleep(100); } catch (InterruptedException e) {}
@@ -149,6 +157,7 @@ public class USLocalizer {
 			   boolean update[] = {true, true, true};
 			   double newpos[] = {0,0,0+1};
 			   odo.setPosition(newpos, update);
+			   //progress = 4;
 	       //}
 	      // if(angleA > 180){
 	       //Motor.A.rotate(convertAngle(2.885, 16.755,  test ), true);
@@ -156,19 +165,20 @@ public class USLocalizer {
 	       //}
 	       }
 	    }
-		
-		    
-		//keep rotating until the robot sees a wall, then latch the angle
-			
-		//angle latched here( seeing the first-taking-into-account wall)
-			
-		// switch direction and rotate 
-			
-			
-		// keep rotating until the robot sees a wall, then latch the angle
-		
-		// angleA is clockwise from angleB, so assume the average of the
-		// angles to the right of angleB is 45 degrees past 'north'			
+	    
+	   /*if(progress == 4){
+		       
+	    	   Motor.A.rotate(convertAngle(2.885, width,  90), true);
+			   Motor.B.rotate(-convertAngle(2.885, width, 90),false);  
+	         
+			   Motor.A.setSpeed(50);
+			   Motor.B.setSpeed(50);
+			   Motor.A.forward();
+			   Motor.B.forward();
+			   
+			   
+	   }*/
+	      	
 	}
 	
 	// methods of determining the rotations for the wheels from Lab 2's SquareDriver

@@ -31,6 +31,8 @@ public class Navigation {
 	private boolean objectCollected = false;
 	
 	private int i = 1;
+	private int tempX;
+	private int tempY;
 
 	
 	public Navigation(Odometer odo, UltrasonicSensor us) {
@@ -143,6 +145,7 @@ public class Navigation {
 
 		
 	}
+	
 	
 	public double minTheta(double angle){
 		if (angle < -180)

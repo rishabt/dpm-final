@@ -13,7 +13,9 @@ public class BTTest {
 	// example call of the transmission protocol
 	// The print function is just for debugging to make sure data is received correctly
 	// make sure to import the bluetooth.BluetoothConnection library
+	
 	@SuppressWarnings("unused")
+	
 	public static void main(String [] args) {
 		BluetoothConnection conn = new BluetoothConnection();
 		// as of this point the bluetooth connection is closed again, and you can pair to another NXT (or PC) if you wish

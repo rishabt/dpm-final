@@ -5,6 +5,7 @@ import lejos.nxt.*;
 import lejos.nxt.comm.*;
 import javax.bluetooth.*;
 import Support.Communicator;
+import Master.*;
 
 import Support.*;
 
@@ -12,10 +13,18 @@ public class Master {
 	
 	public static PlayerRole role;
 	public static int[] greenZone;
-	public static int[] redZOne;
+	public static int[] redZone;
+	public static StartCorner corner;
+	public static double[] initPosition = new double[3];
 	
 	public static void main(String[] args){
 		Button.ESCAPE.addButtonListener(new ExitListener());
+		
+		Bluetooth.setFriendlyName("master");
+		
+		TwoWheeledRobot robot = new TwoWheeledRobot(Motor.A, Motor.B);
+		Grid grid = new Grid(30 * 12, 30 * 12);
+		Odometer odo = new Odometer(robot, grid);
 		
 		LCD.drawString("MASTER", 0, 1);
 		LCD.drawString("(press button)", 0, 3);
@@ -23,22 +32,52 @@ public class Master {
 		Button.waitForAnyPress();
 		LCD.clear();
 		
-		// INITIALIZE
+		BluetoothConnection conn = new BluetoothConnection();
+		Transmission t = conn.getTransmission();
 		
-		Bluetooth.setFriendlyName("master");
+		if (t == null) {
+			LCD.drawString("Failed to read transmission", 0, 5);
+		} else {
+			corner = t.startingCorner;
+			
+			role = t.role;
+			
+			// green zone is defined by these (bottom-left and top-right) corners:
+			greenZone = t.greenZone;
+			
+			// red zone is defined by these (bottom-left and top-right) corners:
+			redZone = t.redZone;
+			
+			// print out the transmission information to the LCD
+			conn.printTransmission();
+		}
+		
+		if(corner == StartCorner.BOTTOM_RIGHT){
+			initPosition[0] = 304.8 - lightlocalize.y;
+			initPosition[1] = 0.0 + lightlocalize.x;
+			initPosition[2] = 270;
+			
+		}
+		
+		else if(corner == StartCorner.TOP_LEFT){
+			initPosition[0] = 0.0 + lightlocalize.y;
+			initPosition[1] = 304.8 - lightlocalize.x;
+			initPosition[2] = 90;
+		}
+		
+		else if(corner == StartCorner.TOP_RIGHT){
+			initPosition[0] = 304.8 - lightlocalize.y;
+			initPosition[1] = 304.8 - lightlocalize.x;
+			initPosition[2] = 180;
+		}
+		
+		
+		// INITIALIZE
 		
 		LCD.drawString("connecting...", 0, 0);
 		Communicator communicator = new Communicator(bluetoothConnect());
 		LCD.clear();
 		LCD.drawString("* bluetooth up", 0, 0);
-
-		TwoWheeledRobot robot = new TwoWheeledRobot(Motor.A, Motor.B);
-		LCD.drawString("* robot ready", 0, 1);
-		
-		Grid grid = new Grid(30 * 8, 30 * 8);
-		Odometer odo = new Odometer(robot, grid);
-		LCD.drawString("* odometer on", 0, 2);
-		
 		
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
 		LCD.drawString("* u.s. ready", 0, 5);
@@ -51,7 +90,6 @@ public class Master {
 
 		
 		LightSensor ls = new LightSensor(SensorPort.S3);
-		LCD.drawString("* l.s. ready", 0, 6);
 		
 		ColorSensor cs = new ColorSensor(SensorPort.S2);
 		 
@@ -64,16 +102,22 @@ public class Master {
 		// LOCALIZE
 		
 		int option = Button.waitForAnyPress();
+//		
+//		if (option == Button.ID_LEFT) {
+//			USLocalizer localizer = new USLocalizer(odo, us);
+//			localizer.doLocalization();
+//		} else if(option == Button.ID_RIGHT) {
+////			usPoller = new UltrasonicPoller(nav, us, search, communicator);
+////			usPoller.start();
+//			
+//			//nav.travelTo(60, 60);
+//		}
 		
-		if (option == Button.ID_LEFT) {
-			USLocalizer localizer = new USLocalizer(odo, us);
-			localizer.doLocalization();
-		} else if(option == Button.ID_RIGHT) {
-			usPoller = new UltrasonicPoller(nav, us, search, communicator);
-			usPoller.start();
+		
+		if(role == PlayerRole.BUILDER){
 			
-			//nav.travelTo(60, 60);
 		}
+		
 		
 		Button.waitForAnyPress();
 	}
@@ -85,6 +129,7 @@ public class Master {
 			Button.waitForAnyPress();
 			System.exit(1);
 		}
+		
 		return Bluetooth.connect(slave);
 	}
 	
