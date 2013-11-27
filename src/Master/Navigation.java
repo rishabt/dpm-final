@@ -162,12 +162,14 @@ public class Navigation {
 		
 		double correctedAngle = angle - odo.getTheta();
 		
-		correctedAngle = minTheta(correctedAngle);
+		correctedAngle = minTheta(correctedAngle) + 2;
 		
 		Motor.A.rotate(convertAngle(leftRadius, width, correctedAngle), true);
 		Motor.B.rotate(-convertAngle(rightRadius, width, correctedAngle), false);
 		
 		Sound.beep();
+		
+		odo.setTheta(angle);
 		
 		Motor.A.stop();
 		Motor.B.stop();

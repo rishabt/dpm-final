@@ -26,7 +26,7 @@ public class Search implements SearchController{
 	
 	private LinkedList<Point> path;
 	
-	public Search(Navigation nav, UltrasonicSensor us, ColorSensor cs){
+	public Search(Navigation nav, UltrasonicSensor us, ColorSensor cs, PlayerRole role){
 		this.us = us;
 		this.cs = cs;
 		this.nav = nav;
@@ -43,9 +43,171 @@ public class Search implements SearchController{
 		
 		boolean result = false;
 		
-		if(odo.getX() <= 290 && odo.getY() <= 290){
+		if(Master.role == PlayerRole.BUILDER){									//Role of a builder robot
+			
+			robot.setRotationSpeed(30);
+			
+			if(us.getDistance() <= 35){											//If distance < 35
+				try {
+					result = obj.detector();									//Check if a Styrofoam block
+					
+					if(result){													//If yes, return true
+						return result;
+					}
+					
+					else{
+						nav.moveBy(-30);										//If an obstacle, move back
+						nav.turnTo(90);											//Turn to 90 degrees
+					}
+						
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if(odo.getTheta() >= 90){
+				robot.setRotationSpeed(0);											//If Theta crosses 90 degrees, stop rotating 
+				
+				if(us.getDistance() <= 35){											//If distance < 35
+					try {
+						result = obj.detector();									//Check if a Styrofoam block
+						
+						if(result){													//If yes, return true
+							return result;
+						}
+						
+						else{
+							nav.moveBy(-30);										//If an obstacle, move back		<------
+							nav.turnTo(90);											//Turn to 90 degrees			<------
+						}
+							
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else{
+					nav.moveBy(30);													//Else move robot by 30
+				}
+				
+				if(us.getDistance() <= 35){											//If distance < 35
+					try {
+						result = obj.detector();									//Check if a Styrofoam block
+						
+						if(result){													//If yes, return true
+							return result;
+						}
+						
+						else{
+							nav.moveBy(-30);										//If an obstacle, move back		<------
+							nav.turnTo(90);											//Turn to 90 degrees			<------
+						}
+							
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+				else{
+					nav.moveBy(30);
+				}
+				
+				nav.turnTo(0);
+				
+				if(us.getDistance() <= 35){											//If distance < 35
+					try {
+						result = obj.detector();									//Check if a Styrofoam block
+						
+						if(result){													//If yes, return true
+							return result;
+						}
+						
+						else{
+							nav.moveBy(-30);										//If an obstacle, move back		<------
+							nav.turnTo(90);											//Turn to 90 degrees			<------
+						}
+							
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+				else{
+					nav.moveBy(35);
+				}
+				
+				nav.turnTo(-90);
+				
+				if(us.getDistance() <= 35){											//If distance < 35
+					try {
+						result = obj.detector();									//Check if a Styrofoam block
+						
+						if(result){													//If yes, return true
+							return result;
+						}
+						
+						else{
+							nav.moveBy(-30);										//If an obstacle, move back		<------
+							nav.turnTo(90);											//Turn to 90 degrees			<------
+						}
+							
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+				else{
+					nav.moveBy(30);
+				}
+				
+				nav.turnTo(0);
+				
+				if(us.getDistance() <= 35){											//If distance < 35
+					try {
+						result = obj.detector();									//Check if a Styrofoam block
+						
+						if(result){													//If yes, return true
+							return result;
+						}
+						
+						else{
+							nav.moveBy(-30);										//If an obstacle, move back		<------
+							nav.turnTo(90);											//Turn to 90 degrees			<------
+						}
+							
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+				else{
+					nav.moveBy(30);
+				}
+		}
+			
 			
 		}
+		
+		else{																	//Role of a garbage collector robot
+			
+		}
+		
 		
 		return result;
 		

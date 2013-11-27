@@ -10,6 +10,10 @@ import Support.*;
 
 public class Master {
 	
+	public static PlayerRole role;
+	public static int[] greenZone;
+	public static int[] redZOne;
+	
 	public static void main(String[] args){
 		Button.ESCAPE.addButtonListener(new ExitListener());
 		
@@ -53,7 +57,7 @@ public class Master {
 		 
 		ObjectDetector objectDetector = new ObjectDetector(nav, us, cs);
 		
-		Search search = new Search(nav, us, cs);
+		Search search = new Search(nav, us, cs, PlayerRole.BUILDER);
 		
 		UltrasonicPoller usPoller;
 		
@@ -68,7 +72,7 @@ public class Master {
 			usPoller = new UltrasonicPoller(nav, us, search, communicator);
 			usPoller.start();
 			
-//			nav.turnTo(90);
+			//nav.travelTo(60, 60);
 		}
 		
 		Button.waitForAnyPress();
