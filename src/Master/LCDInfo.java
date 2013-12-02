@@ -4,6 +4,12 @@ import lejos.nxt.LCD;
 import lejos.util.Timer;
 import lejos.util.TimerListener;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
+
 public class LCDInfo implements TimerListener{
 	public static final int LCD_REFRESH = 100;
 	private Odometer odo;
@@ -12,6 +18,10 @@ public class LCDInfo implements TimerListener{
 	// arrays for displaying data
 	private double [] pos;
 	
+	/**
+	 * 
+	 * @param odo
+	 */
 	public LCDInfo(Odometer odo) {
 		this.odo = odo;
 		this.lcdTimer = new Timer(LCD_REFRESH, this);
@@ -23,6 +33,9 @@ public class LCDInfo implements TimerListener{
 		lcdTimer.start();
 	}
 	
+	/**
+	 * 
+	 */
 	public void timedOut() { 
 		odo.getPosition(pos);
 		LCD.clear();

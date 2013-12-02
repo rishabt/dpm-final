@@ -5,15 +5,25 @@ import lejos.nxt.*;
 public class Clamp {
 	public int count = 0;
 	
+	/**
+	 * 
+	 */
 	public static void lockMotors() {
 		Motor.A.stop();
 		Motor.B.stop();
 
 	}
+	/**
+	 * 
+	 * @param count
+	 */
     public Clamp(int count){
     	this.count = count;
     }
     
+    /**
+     * 
+     */
     public static void lifting() {
        NXTRegulatedMotor mastermotor = Motor.A;
        NXTRegulatedMotor leftclaw = Motor.B; 
@@ -36,6 +46,9 @@ public class Clamp {
 		lockMotors();
     }
     
+    /**
+     * 
+     */
     public static void dropping(){
     	NXTRegulatedMotor mastermotor = Motor.A;
         NXTRegulatedMotor leftclaw = Motor.B; 
@@ -59,11 +72,24 @@ public class Clamp {
 		lockMotors();
     }
     
+    /**
+     * 
+     * @param radius
+     * @param distance
+     * @return
+     */
     private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 			}
+    /**
+     * 
+     * @param radius
+     * @param width
+     * @param angle
+     * @return
+     */
 			// methods of determining the rotating angles for the wheels from Lab 2's SquareDriver
-  private static int convertAngle(double radius, double width, double angle) {
+    private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 			}
 }

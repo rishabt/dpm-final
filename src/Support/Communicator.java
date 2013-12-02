@@ -5,11 +5,20 @@ import lejos.nxt.*;
 import lejos.nxt.comm.*;
 import javax.bluetooth.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class Communicator {
 	protected BTConnection connection;
 	protected DataInputStream inStream;
 	protected DataOutputStream outStream;
 	
+	/**
+	 * 
+	 * @param connection
+	 */
 	public Communicator(BTConnection connection) {
 		LCD.drawString("connecting...", 0, 1);
 		if (connection == null) {
@@ -24,6 +33,9 @@ public class Communicator {
 		LCD.clear();
 	}
 	
+	/**
+	 * 
+	 */
 	public void bluetoothClose() {
 		try {
 			inStream.close();
@@ -32,6 +44,10 @@ public class Communicator {
 		} catch (IOException e) {}
 	}
 	
+	/**
+	 * 
+	 * @param message
+	 */
 	public void bluetoothSend(String message) {
 		try {
 			outStream.writeUTF(message);
@@ -43,6 +59,10 @@ public class Communicator {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String bluetoothReceive() {
 		String message = "";
 		try { message = inStream.readUTF(); } catch (IOException e) {

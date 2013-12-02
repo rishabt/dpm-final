@@ -1,11 +1,14 @@
 package Master;
 
-
-// Rishab: TODO clean up the travelling code. I can't read it, nor work with it!
-
 import lejos.nxt.*;
 import Support.Communicator;
 import java.util.LinkedList;
+
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 
 public class Navigation {
 	
@@ -34,7 +37,13 @@ public class Navigation {
 	private double tempX;
 	private double tempY;
 	private Communicator comm;
-
+	
+	/**
+	 * 
+	 * @param odo
+	 * @param us
+	 * @param comm
+	 */
 	
 	public Navigation(Odometer odo, UltrasonicSensor us, Communicator comm) {
 		this.odo = odo;
@@ -54,6 +63,11 @@ public class Navigation {
 	*    - if there was a block, restart, otherwise travel to point
 	*/
 	
+	/**
+	 * 
+	 * @param destination
+	 * @throws Exception
+	 */
 	public void navigateTo(Point destination) throws Exception {
 		Point location = new Point((int) odo.getX(), (int) odo.getY());
 		LinkedList<Point> path = grid.depthFirst(location, destination);
@@ -64,6 +78,12 @@ public class Navigation {
 		if (path.size() > 0) navigateTo(destination);
 	}
 	
+	/**
+	 * 
+	 * @param path
+	 * @return
+	 * @throws Exception
+	 */
 	private boolean navigate(LinkedList<Point> path) throws Exception {
 		Point collision = collisionPoint();
 		
@@ -76,6 +96,10 @@ public class Navigation {
 		}
 	}
 		
+	/**
+	 * 
+	 * @return
+	 */
 	private Point collisionPoint() {
 		int distance = getDistance();
 		
@@ -95,6 +119,10 @@ public class Navigation {
 		return point;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private int getDistance() {
 		
 		// Rishab: possibly need to do multiple readings here
@@ -122,10 +150,22 @@ public class Navigation {
 	*  must only be used for short journeys. 
 	*/
 		
+	/**
+	 * 
+	 * @param point
+	 * @throws Exception
+	 */
 	public void travelTo(Point point) throws Exception {
 		travelTo(point.x, point.y);
 	}
 		
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean travelTo(double x, double y) throws Exception {
 		
 		boolean travelled = false;
@@ -152,7 +192,7 @@ public class Navigation {
 				break;
 			}
 			
-			robot.setForwardSpeed(10);
+			robot.setForwardSpeed(25);
 			
 		}
 		
@@ -164,7 +204,10 @@ public class Navigation {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @throws Exception
+	 */
 	public void obstacleAvoid() throws Exception{
 		
 		us.ping();
@@ -172,7 +215,7 @@ public class Navigation {
 		boolean styrofoam = ObjectDetector.detector();
 		
 		if(styrofoam){																//If a Styrofoam block
-			moveBy(10);
+			//moveBy(10);
 			comm.bluetoothSend("lift");
 		}
 		
@@ -200,6 +243,12 @@ public class Navigation {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param angle
+	 * @return
+	 */
+	
 	public double minTheta(double angle){
 		if (angle < -180)
 			angle += 360;
@@ -210,6 +259,10 @@ public class Navigation {
 		return angle;
 	}
 	
+	/**
+	 * 
+	 * @param angle
+	 */
 	public void turnTo(double angle) {
 		// USE THE FUNCTIONS setForwardSpeed and setRotationalSpeed from TwoWheeledRobot!
 		
@@ -232,16 +285,31 @@ public class Navigation {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param radius
+	 * @param distance
+	 * @return
+	 */
 	public int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
+	/**
+	 * 
+	 * @param radius
+	 * @param width
+	 * @param angle
+	 * @return
+	 */
 	public int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
-	
+	/**
+	 * 
+	 * @param distance
+	 */
 	public void moveBy(int distance){
 		
 		Motor.A.setSpeed(100);
@@ -252,10 +320,18 @@ public class Navigation {
 	
 	}
 	
+	/**
+	 * 
+	 * @param angle
+	 */
 	public void turnBy(int angle){
 		
 		turnTo(odo.getTheta() + angle);
 	}
+	
+	/**
+	 * 
+	 */
 	
 	public void stop() {
 		robot.stop();
@@ -268,19 +344,34 @@ public class Navigation {
 	*  Simple getters for internal objects. Passing in Navigation object gives
 	*  access to Odometer, Robot, UltrasonicSensor, and Grid.
 	*/
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public TwoWheeledRobot getRobot(){
 		return this.robot;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Odometer getOdometer() {
 		return this.odo;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Grid getGrid() {
 		return this.grid;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public UltrasonicSensor getUltrasonicSensor() {
 		return this.us;
 	}

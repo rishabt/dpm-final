@@ -6,7 +6,6 @@ import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
 
-
 public class lightlocalize {
 	
     private LightSensor lsl = new LightSensor(SensorPort.S3);
@@ -14,16 +13,26 @@ public class lightlocalize {
     public static double ROTATION_SPEED = 40;    
 	public static final double width = 12.61;
 	public static final double radius = 2.885;
-	public static int linevalue = 450;
+	public static int linevalue = 410;
 	public static double x = 8.6,y = 4.9;//distance's error from the (0,0) to the center of the robot
 	private Odometer odo;
 	private TwoWheeledRobot robot;
     
+	/**
+	 * 
+	 * @param odo
+	 * @param lsl
+	 * @param lsr
+	 */
     public lightlocalize(Odometer odo, LightSensor lsl,LightSensor lsr){
        this.odo = odo;
        this.lsl = lsl;
        this.lsr = lsr;
     }
+    
+    /**
+     * 
+     */
     
     public void dolitlocalize(){
     	 int progress = 0;
@@ -33,8 +42,8 @@ public class lightlocalize {
 		 
     	 Motor.A.setSpeed(150);
 		 Motor.B.setSpeed(150);
-    	 Motor.A.rotate(convertAngle(2.885, width,  92), true);
-		 Motor.B.rotate(-convertAngle(2.885, width, 92),false);  
+    	 Motor.A.rotate(convertAngle(2.885, width,  95), true);
+		 Motor.B.rotate(-convertAngle(2.885, width, 95),false);  
        
 		 Motor.A.setSpeed(150);
 		 Motor.B.setSpeed(150);
@@ -67,8 +76,8 @@ public class lightlocalize {
 		    	 Motor.A.setSpeed(150);
 				 Motor.B.setSpeed(150);
 			
-		    	 Motor.A.rotate(convertAngle(2.885, width, -88), true);
-				 Motor.B.rotate(-convertAngle(2.885, width, -88),false); 
+		    	 Motor.A.rotate(convertAngle(2.885, width, -90), true);
+				 Motor.B.rotate(-convertAngle(2.885, width, -90),false); 
 				 
 				 Motor.A.setSpeed(150);
 				 Motor.B.setSpeed(150);
@@ -111,11 +120,24 @@ public class lightlocalize {
 		 }
 		
 		
-    
+    /**
+     * 
+     * @param radius
+     * @param distance
+     * @return
+     */
     
     private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
+    
+    /**
+     * 
+     * @param radius
+     * @param width
+     * @param angle
+     * @return
+     */
 	
 	// methods of determining the rotating angles for the wheels from Lab 2's SquareDriver
 	private static int convertAngle(double radius, double width, double angle) {

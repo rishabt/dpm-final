@@ -8,20 +8,27 @@ import lejos.nxt.UltrasonicSensor;
 public class USLocalizer {
 	
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	public static double ROTATION_SPEED = 60;    
+	public static double ROTATION_SPEED = 55;    
 	public static double width = 12.61;
 	private Odometer odo;
 	private TwoWheeledRobot robot;
 	private UltrasonicSensor us;
 	private final int walld = 50;
 	
-	
+	/**
+	 * 
+	 * @param odo
+	 * @param us
+	 */
 	public USLocalizer(Odometer odo, UltrasonicSensor us) {
 		this.odo = odo;
 		this.robot = odo.getTwoWheeledRobot();
 		this.us = us;
 	}
 	
+	/**
+	 * 
+	 */
 	public void doLocalization() {
 		double[] pos = new double [3];
 		double angleA = 0, angleB = 0;
@@ -180,16 +187,33 @@ public class USLocalizer {
 	      	
 	}
 	
+	/**
+	 * 
+	 * @param radius
+	 * @param distance
+	 * @return
+	 */
 	// methods of determining the rotations for the wheels from Lab 2's SquareDriver
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 	
+	/**
+	 * 
+	 * @param radius
+	 * @param width
+	 * @param angle
+	 * @return
+	 */
 	// methods of determining the rotating angles for the wheels from Lab 2's SquareDriver
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private int getFilteredData() {
 		int distance;
 		

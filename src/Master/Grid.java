@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.HashMap;
 
+
 public class Grid {
 	private static final int UNSAFE = -5;
 	
@@ -16,7 +17,12 @@ public class Grid {
 	// separation in centimeters
 	private static final int SEPARATION = 10;
 	private int[][] grid;
-			
+		
+	/**
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	// external width and height in centimeters
 	public Grid(int width, int height) {
 		this.width = width;
@@ -31,24 +37,50 @@ public class Grid {
 	
 	
 	// OBSTACLE AVOIDANCE
-
+	/**
+	 * 
+	 * @param point
+	 * @return
+	 */
 
 	public boolean unsafe(Point point) {
 		return unsafe(row(point.x), col(point.y));
 	}
 	
+	/**
+	 * 
+	 * @param point
+	 * @return
+	 */
 	public boolean safe(Point point) {
 		return !unsafe(point);
 	}
 	
+	/**
+	 * 
+	 * @param row
+	 * @param column
+	 * @return
+	 */
 	private boolean unsafe(int row, int column) {
 		return grid[row][column] < 0;
 	}
 	
+	/**
+	 * 
+	 * @param row
+	 * @param column
+	 * @return
+	 */
 	private boolean safe(int row, int column) {
 		return !unsafe(row, column);
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public void report(int x, int y) {
 		int row = row(x), col = col(y);
 		
@@ -65,6 +97,11 @@ public class Grid {
 	
 	// SEARCH
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	
 	public void checkin(int x, int y) {
 		int row = row(x), col = col(y);
@@ -74,6 +111,11 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param point
+	 * @return
+	 */
 	public Point wanderFrom(Point point) {
 		Point freshest = null;
 		int minCount = Integer.MAX_VALUE;
@@ -90,6 +132,10 @@ public class Grid {
 		return freshest;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Point getFreshPoint() {
 		Point freshest = null;
 		int lowest = Integer.MAX_VALUE;
@@ -108,7 +154,12 @@ public class Grid {
 	
 	
 	// NAVIGATION (SHORTEST PATH)
-	
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	
 	public LinkedList<Point> depthFirst(Point a, Point b) {
 		LinkedList<Point> path = null;
@@ -128,6 +179,12 @@ public class Grid {
 	}
 		
 	// sort points by min distance to destination
+	/**
+	 * 
+	 * @param points
+	 * @param destination
+	 * @return
+	 */
 	private LinkedList<Point> sort(LinkedList<Point> points, Point destination) {
 		LinkedList<Point> sorted = new LinkedList<Point>();	
 		while (!points.isEmpty()) {
@@ -142,6 +199,14 @@ public class Grid {
 	*  closest([points], point) returns the closest point in distance to the
 	*  destination
 	*/
+	/**
+	 * closest([points], point) returns the closest point in distance to the
+	 * destination
+	 * 
+	 * @param points
+	 * @param destination
+	 * @return
+	 */
 	private Point closest(LinkedList<Point> points, Point destination) {
 		Point min = null;
 		int minDistance = Integer.MAX_VALUE;
@@ -156,6 +221,12 @@ public class Grid {
 	}
 	
 	// Djikstra's algorithm
+	/**
+	 * Djikstra's algorithm
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public LinkedList<Point> breadthFirst(Point a, Point b) {
 		HashMap<Point, Point> predecessors = new HashMap<Point, Point>();
 		HashMap<Point, Integer> distances = new HashMap<Point, Integer>();
@@ -187,6 +258,12 @@ public class Grid {
 	* reacreatePath is a helper method for shortestPath. It follows
 	* the chain of predecessors and outputs the shortest path.
 	*/
+	/**
+	 * 
+	 * @param predecessors
+	 * @param last
+	 * @return
+	 */
 	private LinkedList<Point> recreatePath(HashMap<Point, Point> predecessors, Point last) {
 		Point head = last;
 		LinkedList<Point> path = new LinkedList<Point>();
@@ -201,6 +278,11 @@ public class Grid {
 	* safeNeighborsOf(p) returns a list of neighbors in the
 	* safe points hashset
 	*/
+	/**
+	 * 
+	 * @param point
+	 * @return
+	 */
 	private LinkedList<Point> safeNeighborsOf(Point point) {
 		LinkedList<Point> safeNeighbors = new LinkedList<Point>();
 		for (Point neighbor : neighborsOf(point)) {
@@ -216,6 +298,16 @@ public class Grid {
 	*    * p *    ->   [ 8 point array]
 	*    * * *
 	*/
+	
+	/**
+	 * neighborsOf(p) returns all points around it:
+	 * 
+	 *    * * *
+	 *    * p *    ->   [ 8 point array]
+	 *    * * *
+	 * @param point
+	 * @return
+	 */
 	private Point[] neighborsOf(Point point) {
 		int x = point.x, y = point.y;
 		
@@ -236,31 +328,60 @@ public class Grid {
 	
 	
 	// x -> row
+	/**
+	 * 
+	 * @param x
+	 * @return
+	 */
 	private int row(int x) {
 		return Math.min(rows - 1, Math.max(0, sep(x)));		
 	}
 	
 	// y -> column
+	/**
+	 * 
+	 * @param y
+	 * @return
+	 */
 	private int col(int y) {
 		return Math.min(columns - 1, Math.max(0, sep(y)));
 	}
 	
 	// x -> row, y -> column (no checks)
+	/**
+	 * 
+	 * @param coordinate
+	 * @return
+	 */
 	private int sep(int coordinate) {
 		return coordinate / SEPARATION;
 	}
 	
 	// row -> x, column -> y
+	/**
+	 * 
+	 * @param separation
+	 * @return
+	 */
 	private int coord(int separation) {
 		return separation * SEPARATION;
 	}
 	
 	// (row, column) -> (x, y)
+	/**
+	 * 
+	 * @param row
+	 * @param column
+	 * @return
+	 */
 	private Point pointFor(int row, int column) {
 		return new Point(coord(row), coord(column));
 	}
 	
 	// prints large grid. not suitable for lejos LCD
+	/**
+	 * 
+	 */
 	public String toString() {
 		String str = "-- Grid width=" + width + " height=" + height;
 		str += " rows=" + rows + " columns=" + columns + "\n";		
@@ -277,6 +398,9 @@ public class Grid {
 	}
 
 	// all edge points are "unsafe"
+	/**
+	 * 
+	 */
 	private void reportEdges() {
 		for (int col = 0; col < columns; col ++) {
 			grid[0][col] = UNSAFE;

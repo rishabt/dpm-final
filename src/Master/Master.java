@@ -9,14 +9,24 @@ import Master.*;
 
 import Support.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class Master {
 	
 	public static PlayerRole role;
-	public static int[] greenZone = {1, 5, 2, 9};
-	public static int[] redZone = {3, 4, 6, 8};
+	public static int[] greenZone = new int[4];
+	public static int[] redZone = new int[4];
 	public static StartCorner corner;
 	public static double[] initPosition = new double[3];
 	
+	/**
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception{
 		Button.ESCAPE.addButtonListener(new ExitListener());
 		
@@ -32,48 +42,45 @@ public class Master {
 		Button.waitForAnyPress();
 		LCD.clear();
 		
-//		BluetoothConnection conn = new BluetoothConnection();
-//		Transmission t = conn.getTransmission();
-//		
-//		if (t == null) {
-//			LCD.drawString("Failed to read transmission", 0, 5);
-//		} else {
-//			corner = t.startingCorner;
-//			
-//			role = t.role;
-//			
-//			// green zone is defined by these (bottom-left and top-right) corners:
-//			greenZone = t.greenZone;
-//			
-//			// red zone is defined by these (bottom-left and top-right) corners:
-//			redZone = t.redZone;
-//			
-//			// print out the transmission information to the LCD
-//			conn.printTransmission();
-//		}
-//		
-//		if(corner == StartCorner.BOTTOM_RIGHT){
-//			initPosition[0] = 304.8 - lightlocalize.y;
-//			initPosition[1] = 0.0 + lightlocalize.x;
-//			initPosition[2] = 270;
-//			
-//		}
-//		
-//		else if(corner == StartCorner.TOP_LEFT){
-//			initPosition[0] = 0.0 + lightlocalize.y;
-//			initPosition[1] = 304.8 - lightlocalize.x;
-//			initPosition[2] = 90;
-//		}
-//		
-//		else if(corner == StartCorner.TOP_RIGHT){
-//			initPosition[0] = 304.8 - lightlocalize.y;
-//			initPosition[1] = 304.8 - lightlocalize.x;
-//			initPosition[2] = 180;
-//		}
-//		
-		corner = StartCorner.BOTTOM_LEFT;
-		role = PlayerRole.BUILDER;
-
+		BluetoothConnection conn = new BluetoothConnection();
+		Transmission t = conn.getTransmission();
+		
+		if (t == null) {
+			LCD.drawString("Failed to read transmission", 0, 5);
+		} else {
+			corner = t.startingCorner;
+			
+			role = t.role;
+			
+			// green zone is defined by these (bottom-left and top-right) corners:
+			greenZone = t.greenZone;
+			
+			// red zone is defined by these (bottom-left and top-right) corners:
+			redZone = t.redZone;
+			
+			// print out the transmission information to the LCD
+			conn.printTransmission();
+		}
+		
+		if(corner == StartCorner.BOTTOM_RIGHT){
+			initPosition[0] = 304.8 - lightlocalize.y;
+			initPosition[1] = 0.0 + lightlocalize.x;
+			initPosition[2] = 270;
+			
+		}
+		
+		else if(corner == StartCorner.TOP_LEFT){
+			initPosition[0] = 0.0 + lightlocalize.y;
+			initPosition[1] = 304.8 - lightlocalize.x;
+			initPosition[2] = 90;
+		}
+		
+		else if(corner == StartCorner.TOP_RIGHT){
+			initPosition[0] = 304.8 - lightlocalize.y;
+			initPosition[1] = 304.8 - lightlocalize.x;
+			initPosition[2] = 180;
+		}
+		
 		// INITIALIZE
 		
 		LCD.drawString("connecting...", 0, 0);
@@ -89,7 +96,6 @@ public class Master {
 				
 		LCDInfo lcd = new LCDInfo(odo);
 		// LCD.drawString("* lcd info on", 0, 4);
-
 		
 		LightSensor ls = new LightSensor(SensorPort.S3);
 		LightSensor ls2 = new LightSensor(SensorPort.S4);
@@ -121,7 +127,7 @@ public class Master {
 		nav.travelTo(odo.getX() + 30, odo.getY() + 30);
 		
 		
-		if(role == PlayerRole.BUILDER){
+		if(role.getId() == 1){
 			
 			Builder play = new Builder(greenZone, redZone, us, cs, nav);
 			
@@ -140,7 +146,11 @@ public class Master {
 		
 		Button.waitForAnyPress();
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	
 	public static BTConnection bluetoothConnect() {
 		RemoteDevice slave = Bluetooth.getKnownDevice("slave");

@@ -5,6 +5,11 @@ import java.util.LinkedList;
 import lejos.nxt.*;
 import lejos.nxt.comm.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class Search implements SearchController{
 	
 	private int distance;
@@ -26,6 +31,13 @@ public class Search implements SearchController{
 	
 	private LinkedList<Point> path;
 	
+	/**
+	 * 
+	 * @param nav
+	 * @param us
+	 * @param cs
+	 * @param role
+	 */
 	public Search(Navigation nav, UltrasonicSensor us, ColorSensor cs, PlayerRole role){
 		this.us = us;
 		this.cs = cs;
@@ -38,6 +50,9 @@ public class Search implements SearchController{
 	}
 
 	@Override
+	/**
+	 * 
+	 */
 	public boolean search() {
 		// TODO Auto-generated method stub
 		
@@ -216,12 +231,19 @@ public class Search implements SearchController{
 
 	
 	@Override
+	/**
+	 * 
+	 */
 	public int readUSDistance() {
 		// TODO Auto-generated method stub
 		
 		return this.distance;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getDistance(){
 		us.ping();
 		

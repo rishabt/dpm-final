@@ -14,6 +14,9 @@ public class ObjectCollector {
 //		
 //    }
     
+	/**
+	 * 
+	 */
     public static void lifting(){
     	
     	 NXTRegulatedMotor mastermotor = Motor.A;
@@ -58,9 +61,22 @@ public class ObjectCollector {
         
     }
     
+    /**
+     * 
+     * @param radius
+     * @param distance
+     * @return
+     */
     private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 			}
+    /**
+     * 
+     * @param radius
+     * @param width
+     * @param angle
+     * @return
+     */
 			// methods of determining the rotating angles for the wheels from Lab 2's SquareDriver
   private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);

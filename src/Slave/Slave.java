@@ -6,8 +6,17 @@ import lejos.nxt.comm.*;
 import javax.bluetooth.*;
 import Support.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class Slave {
 
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Button.ESCAPE.addButtonListener(new ExitListener());
 		
@@ -44,6 +53,10 @@ public class Slave {
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static BTConnection bluetoothConnect() {
 		return Bluetooth.waitForConnection();
 	}

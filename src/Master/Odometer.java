@@ -3,6 +3,11 @@ package Master;
 import lejos.util.Timer;
 import lejos.util.TimerListener;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class Odometer implements TimerListener {
         public static final int DEFAULT_PERIOD = 25;
         private TwoWheeledRobot robot;
@@ -13,6 +18,12 @@ public class Odometer implements TimerListener {
         private double x, y, theta;
         private double [] oldDH, dDH;
         
+        /**
+         * 
+         * @param robot
+         * @param grid
+         * @param period
+         */
         public Odometer(TwoWheeledRobot robot, Grid grid, int period) {
                 // initialise variables
                 this.robot = robot;
@@ -29,10 +40,18 @@ public class Odometer implements TimerListener {
                 odometerTimer.start();                        
         }
         
+        /**
+         * 
+         * @param robot
+         * @param grid
+         */
         public Odometer(TwoWheeledRobot robot, Grid grid) {
                 this(robot, grid, DEFAULT_PERIOD);
         }
         
+        /**
+         * 
+         */
         public void timedOut() {
                 robot.getDisplacementAndHeading(dDH);
                 dDH[0] -= oldDH[0];
@@ -53,14 +72,26 @@ public class Odometer implements TimerListener {
                 oldDH[1] += dDH[1];
         }
         
+        /**
+         * 
+         * @return
+         */
         public TwoWheeledRobot getRobot() {
                 return robot;
         }
         
+        /**
+         * 
+         * @return
+         */
         public Grid getGrid() {
                 return grid;
         }
         
+        /**
+         * 
+         * @param pos
+         */
         // accessors
         public void getPosition(double [] pos) {
                 synchronized (lock) {
@@ -70,22 +101,43 @@ public class Odometer implements TimerListener {
                 }
         }
         
+        /**
+         * 
+         * @param theta
+         */
         public void setTheta(double theta){
                 this.theta = fixDegAngle(theta);
         }
         
+        /**
+         * 
+         * @param Y
+         */
         public void setY(double Y){
                 this.y = Y;
         }
         
+        /**
+         * 
+         * @param X
+         */
         public void setX(double X){
                 this.x = X;
         }
         
+        /**
+         * 
+         * @return
+         */
         public TwoWheeledRobot getTwoWheeledRobot() {
                 return robot;
         }
         
+        /**
+         * 
+         * @param pos
+         * @param update
+         */
         // mutators
         public void setPosition(double [] pos, boolean [] update) {
                 synchronized (lock) {
@@ -95,6 +147,11 @@ public class Odometer implements TimerListener {
                 }
         }
         
+        /**
+         * 
+         * @param angle
+         * @return
+         */
         // static 'helper' methods
         public static double fixDegAngle(double angle) {                
                 if (angle < 0.0)
@@ -102,6 +159,13 @@ public class Odometer implements TimerListener {
                 
                 return angle % 360.0;
         }
+        
+        /**
+         * 
+         * @param a
+         * @param b
+         * @return
+         */
         
         public static double minimumAngleFromTo(double a, double b) {
                 double d = fixDegAngle(b - a);
@@ -112,6 +176,10 @@ public class Odometer implements TimerListener {
                         return d - 360.0;
         }
         
+        /**
+         * 
+         * @return
+         */
         public double getX() {
                 double result;
 
@@ -121,7 +189,11 @@ public class Odometer implements TimerListener {
 
                 return result;
         }
-
+        
+        /**
+         * 
+         * @return
+         */
         public double getY() {
                 double result;
 
@@ -131,6 +203,11 @@ public class Odometer implements TimerListener {
 
                 return result;
         }
+        
+        /**
+         * 
+         * @return
+         */
 
         public double getTheta() {
                 double result;

@@ -2,6 +2,11 @@ package Master;
 
 import lejos.nxt.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class ObjectDetector {
 	private static ColorSensor cs;
 	private static UltrasonicSensor us = new UltrasonicSensor(SensorPort.S1);
@@ -12,6 +17,12 @@ public class ObjectDetector {
 	
 	private static final int ROTATE_SPEED = 20;
 	
+	/**
+	 * 
+	 * @param nav
+	 * @param us
+	 * @param cs
+	 */
 	public ObjectDetector(Navigation nav, UltrasonicSensor us, ColorSensor cs) {
 		this.nav = nav;
 		this.robot = nav.getRobot();
@@ -20,6 +31,11 @@ public class ObjectDetector {
 		this.odo = nav.getOdometer();
 	}
 	
+	/**
+	 * 
+	 * @param direction
+	 * @return
+	 */
 	public boolean detect(int direction) {
 		double angle = odo.getTheta();				
 		robot.setSpeeds(0.0, direction * ROTATE_SPEED);
@@ -57,12 +73,22 @@ public class ObjectDetector {
 		return angleWithin(angle, 90.0);
 	}
 	
+	/**
+	 * 
+	 * @param angle
+	 * @param degrees
+	 * @return
+	 */
 	public boolean angleWithin(double angle, double degrees) {
 		double theta = odo.getTheta();
 		double diff = Odometer.minimumAngleFromTo(angle, theta);
 		return Math.abs(diff) < degrees;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getDistance() {
 		int[] distances = new int[]{ us.getDistance(), us.getDistance(), us.getDistance() };
 		int distance = 255;
@@ -73,11 +99,20 @@ public class ObjectDetector {
 	}
 	
 	
+	/**
+	 * 
+	 * @author Rishabh
+	 *
+	 */
 	public enum type { OBJECT, BLOCK }										//Enum gives the types of objects
 	
 	public static type TYPE;
 	
-		
+	/**
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public static boolean detector() throws Exception {
 		
 		boolean result = false;	

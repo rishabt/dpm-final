@@ -5,7 +5,11 @@ import lejos.nxt.comm.*;
 import javax.bluetooth.*;
 import Support.Communicator;
 
-
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class UltrasonicPoller extends Thread{
 	private UltrasonicSensor us;
 	private SearchController cont;
@@ -14,6 +18,13 @@ public class UltrasonicPoller extends Thread{
 	
 	private boolean loop;
 	
+	/**
+	 * 
+	 * @param nav
+	 * @param us
+	 * @param cont
+	 * @param comm
+	 */
 	public UltrasonicPoller(Navigation nav, UltrasonicSensor us, SearchController cont, Communicator comm) {
 		this.us = us;
 		this.cont = cont;
@@ -21,7 +32,9 @@ public class UltrasonicPoller extends Thread{
 		this.nav = nav;
 	}
 	
-
+	/**
+	 * 
+	 */
 	public void run() {
 		
 		loop = true;

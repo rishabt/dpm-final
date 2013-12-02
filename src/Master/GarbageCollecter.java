@@ -2,6 +2,11 @@ package Master;
 
 import lejos.nxt.*;
 
+/**
+ * 
+ * @author Rishabh
+ *
+ */
 public class GarbageCollecter {
 	
 	private int[] greenZone;
@@ -15,6 +20,14 @@ public class GarbageCollecter {
 	private double[] midGreen = new double[2];
 	private double[] midRed = new double[2];
 	
+	/**
+	 * 
+	 * @param greenZone
+	 * @param redZone
+	 * @param us
+	 * @param cs
+	 * @param nav
+	 */
 	public GarbageCollecter(int[] greenZone, int[] redZone, UltrasonicSensor us, ColorSensor cs, Navigation nav){
 		this.greenZone = greenZone;
 		this.redZone = redZone;
@@ -32,6 +45,10 @@ public class GarbageCollecter {
 		
 	}
 	
+	/**
+	 * 
+	 * @throws Exception
+	 */
 	
 	public void collect() throws Exception{
 		

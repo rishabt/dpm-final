@@ -10,6 +10,14 @@ public class TwoWheeledRobot {
 	private double leftRadius, rightRadius, width;
 	private double forwardSpeed, rotationSpeed;
 	
+	/**
+	 * 
+	 * @param leftMotor
+	 * @param rightMotor
+	 * @param width
+	 * @param leftRadius
+	 * @param rightRadius
+	 */
 	public TwoWheeledRobot(NXTRegulatedMotor leftMotor,
 						   NXTRegulatedMotor rightMotor,
 						   double width,
@@ -22,21 +30,40 @@ public class TwoWheeledRobot {
 		this.width = width;
 	}
 	
+	/**
+	 * 
+	 * @param leftMotor
+	 * @param rightMotor
+	 */
 	public TwoWheeledRobot(NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor) {
 		this(leftMotor, rightMotor, DEFAULT_WIDTH, DEFAULT_LEFT_RADIUS, DEFAULT_RIGHT_RADIUS);
 	}
 	
+	/**
+	 * 
+	 * @param leftMotor
+	 * @param rightMotor
+	 * @param width
+	 */
 	public TwoWheeledRobot(NXTRegulatedMotor leftMotor, NXTRegulatedMotor rightMotor, double width) {
 		this(leftMotor, rightMotor, width, DEFAULT_LEFT_RADIUS, DEFAULT_RIGHT_RADIUS);
 	}
 	
 	// accessors
+	/**
+	 * 
+	 * @return
+	 */
 	public double getDisplacement() {
 		return (leftMotor.getTachoCount() * leftRadius +
 				rightMotor.getTachoCount() * rightRadius) *
 				Math.PI / 360.0;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public double getHeading() {
 		return (leftMotor.getTachoCount() * leftRadius -
 				rightMotor.getTachoCount() * rightRadius) / width;
@@ -52,16 +79,29 @@ public class TwoWheeledRobot {
 	}
 	
 	// mutators
+	/**
+	 * 
+	 * @param speed
+	 */
 	public void setForwardSpeed(double speed) {
 		forwardSpeed = speed;
 		setSpeeds(forwardSpeed, rotationSpeed);
 	}
 	
+	/**
+	 * 
+	 * @param speed
+	 */
 	public void setRotationSpeed(double speed) {
 		rotationSpeed = speed;
 		setSpeeds(forwardSpeed, rotationSpeed);
 	}
 	
+	/**
+	 * 
+	 * @param forwardSpeed
+	 * @param rotationalSpeed
+	 */
 	public void setSpeeds(double forwardSpeed, double rotationalSpeed) {
 		double leftSpeed, rightSpeed;
 
@@ -100,6 +140,9 @@ public class TwoWheeledRobot {
 			rightMotor.setSpeed((int)rightSpeed);
 	}
 	
+	/**
+	 * 
+	 */
 	public void stop() {
 		setSpeeds(0.0, 0.0);
 	}
